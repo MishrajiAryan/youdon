@@ -1,0 +1,8 @@
+.dart_tool/
+.idea/
+build/
+installer/
+linux/
+macos/
+test/
+dependencies/

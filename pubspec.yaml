@@ -1,0 +1,30 @@
+name: youdon
+description: "A cross-platform YouTube downloader using yt-dlp and FFmpeg"
+version: 0.0.1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  file_picker: ^8.3.1
+  path_provider: ^2.1.1
+  url_launcher: ^6.0.10
+  provider: ^6.0.0
+  open_file: ^3.5.10
+  path: ^1.9.1
+  shared_preferences: ^2.5.2
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+  
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.ico"
+
+flutter:
+  uses-material-design: true
