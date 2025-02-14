@@ -1,0 +1,2 @@
+D:/Development/youdon/android/app/.cxx/RelWithDebInfo/20265f1k/x86/CMakeFiles/edit_cache.dir
+D:/Development/youdon/android/app/.cxx/RelWithDebInfo/20265f1k/x86/CMakeFiles/rebuild_cache.dir
