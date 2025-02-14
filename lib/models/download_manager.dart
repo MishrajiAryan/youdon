@@ -13,33 +13,31 @@ class DownloadManager extends ChangeNotifier {
   String? downloadPath;
 
   DownloadManager() {
-    _loadPreferences();
+    _loadPreferences(); // Load preferences when DownloadManager is created
   }
 
   Future<void> _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    downloadPath = prefs.getString('downloadPath');
+    downloadPath = prefs.getString('downloadPath'); // Load download path
 
     String? completedTasksJson = prefs.getString('completedTasks');
     if (completedTasksJson != null) {
-      try { // Add try-catch block for JSON parsing
+      try {
         completedTasks = (jsonDecode(completedTasksJson) as List)
             .map((taskJson) => DownloadTask.fromJson(taskJson))
             .toList();
       } catch (e) {
-        debugPrint("Error loading completed tasks from preferences: $e");
-        // Handle the error appropriately, e.g., clear the completedTasks list
-        completedTasks = []; // Or some other default value
+        debugPrint("Error loading completed tasks: $e");
+        completedTasks = [];
       }
     }
   }
 
   Future<void> _savePreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('downloadPath', downloadPath ?? "");
+    await prefs.setString('downloadPath', downloadPath ?? ""); // Save download path
 
-    String completedTasksJson =
-        jsonEncode(completedTasks.map((task) => task.toJson()).toList());
+    String completedTasksJson = jsonEncode(completedTasks.map((task) => task.toJson()).toList());
     await prefs.setString('completedTasks', completedTasksJson);
   }
 
