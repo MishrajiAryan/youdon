@@ -1,14 +1,21 @@
-//main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/home_screen.dart';
+import 'screens/home_screen.dart'; // Correct path
 import 'theme_notifier.dart';
+import 'models/download_manager.dart'; // Import your DownloadManager
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(),
-      child: const YouDonApp(),
+    MultiProvider( // Use MultiProvider
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ThemeNotifier(),
+        ),
+        ChangeNotifierProvider( // Add this for DownloadManager
+          create: (_) => DownloadManager(),
+        ),
+      ],
+      child: const YouDonApp(), // const added
     ),
   );
 }
@@ -25,7 +32,7 @@ class YouDonApp extends StatelessWidget {
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
           themeMode: themeNotifier.themeMode,
-          home: const HomeScreen(),
+          home: const HomeScreen(), // const added
         );
       },
     );

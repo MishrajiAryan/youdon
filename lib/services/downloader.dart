@@ -14,23 +14,23 @@ Future<void> startDownload({
   required Function() onComplete,
   required bool createPlaylistFolder,
 }) async {
-  String ytDlpPath = "dependencies/yt-dlp.exe"; // Make sure path is correct
-  String ffmpegPath = "dependencies/ffmpeg/bin/ffmpeg.exe"; // Make sure path is correct
+  String ytDlpPath = "dependencies/yt-dlp.exe"; // Path to yt-dlp executable
+  String ffmpegPath = "dependencies/ffmpeg/bin/ffmpeg.exe"; // Path to ffmpeg
 
   Map<String, String> envVars = {"FFMPEG_BINARY": ffmpegPath};
 
   List<String> ytDlpArgs = [
     "--ffmpeg-location",
     ffmpegPath,
-    "--add-metadata", // Keep metadata embedding
-    "--embed-thumbnail" // Keep thumbnail embedding
+    "--add-metadata",
+    "--embed-thumbnail",
   ];
 
   String outputPath = downloadPath;
-  String fileNameTemplate = "%(title)s.%(ext)s"; // Default file name
+  String fileNameTemplate = "%(title)s.%(ext)s"; // File naming template
 
   if (downloadMode == "playlist" && createPlaylistFolder) {
-    String playlistFolderName = "%(playlist_title)s"; // Folder name template
+    String playlistFolderName = "%(playlist_title)s"; // Playlist folder name
     outputPath = p.join(downloadPath, playlistFolderName);
 
     try {
@@ -99,8 +99,6 @@ Future<void> startDownload({
     onError(e.toString());
   }
 }
-
-
 
 double _parseProgress(String output) {
   RegExp regex = RegExp(r'\b(\d+\.\d+)%');

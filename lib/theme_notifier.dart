@@ -1,4 +1,4 @@
-//theme_notifier.dart
+// theme_notifier.dart
 import 'package:flutter/material.dart';
 
 class ThemeNotifier with ChangeNotifier {

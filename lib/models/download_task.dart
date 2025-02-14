@@ -7,7 +7,6 @@ class DownloadTask {
   double progress;
   bool isCompleted;
   bool isDownloading;
-  // Removed title property
 
   DownloadTask({
     required this.url,
