@@ -1,3 +1,4 @@
+// download_task.dart
 class DownloadTask {
   String url;
   String format;
@@ -6,7 +7,7 @@ class DownloadTask {
   double progress;
   bool isCompleted;
   bool isDownloading;
-  String? title; // Add title property, nullable
+  // Removed title property
 
   DownloadTask({
     required this.url,
@@ -16,7 +17,6 @@ class DownloadTask {
     this.progress = 0.0,
     this.isCompleted = false,
     this.isDownloading = false,
-    this.title, // Initialize title, can be null
   });
 
   factory DownloadTask.fromJson(Map<String, dynamic> json) => DownloadTask(
@@ -27,7 +27,6 @@ class DownloadTask {
         progress: (json['progress'] as num).toDouble(),
         isCompleted: json['isCompleted'],
         isDownloading: json['isDownloading'],
-        title: json['title'], // Deserialize title
       );
 
   Map<String, dynamic> toJson() => {
@@ -38,6 +37,5 @@ class DownloadTask {
         'progress': progress,
         'isCompleted': isCompleted,
         'isDownloading': isDownloading,
-        'title': title, // Serialize title
       };
 }

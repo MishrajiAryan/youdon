@@ -1,3 +1,4 @@
+// downloader.dart
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -11,26 +12,25 @@ Future<void> startDownload({
   required Function(double) onProgress,
   required Function(String) onError,
   required Function() onComplete,
-  required Function(String) onTitleReceived,
   required bool createPlaylistFolder,
 }) async {
-  String ytDlpPath = "dependencies/yt-dlp.exe";
-  String ffmpegPath = "dependencies/ffmpeg/bin/ffmpeg.exe";
+  String ytDlpPath = "dependencies/yt-dlp.exe"; // Make sure path is correct
+  String ffmpegPath = "dependencies/ffmpeg/bin/ffmpeg.exe"; // Make sure path is correct
 
   Map<String, String> envVars = {"FFMPEG_BINARY": ffmpegPath};
 
   List<String> ytDlpArgs = [
     "--ffmpeg-location",
     ffmpegPath,
-    "--add-metadata",
-    "--embed-thumbnail"
+    "--add-metadata", // Keep metadata embedding
+    "--embed-thumbnail" // Keep thumbnail embedding
   ];
 
   String outputPath = downloadPath;
-  String fileNameTemplate = "%(title)s.%(ext)s";
+  String fileNameTemplate = "%(title)s.%(ext)s"; // Default file name
 
   if (downloadMode == "playlist" && createPlaylistFolder) {
-    String playlistFolderName = "%(playlist_title)s";
+    String playlistFolderName = "%(playlist_title)s"; // Folder name template
     outputPath = p.join(downloadPath, playlistFolderName);
 
     try {
@@ -47,7 +47,15 @@ Future<void> startDownload({
   if (format == "mp4") {
     ytDlpArgs.addAll(["-f", "bestvideo+bestaudio", "--merge-output-format", "mp4"]);
   } else {
-    ytDlpArgs.addAll(["-f", "bestaudio", "--extract-audio", "--audio-format", "mp3", "--audio-quality", "0"]);
+    ytDlpArgs.addAll([
+      "-f",
+      "bestaudio",
+      "--extract-audio",
+      "--audio-format",
+      "mp3",
+      "--audio-quality",
+      "0"
+    ]);
   }
 
   ytDlpArgs.add(downloadMode == "single" ? "--no-playlist" : "--yes-playlist");
@@ -70,6 +78,7 @@ Future<void> startDownload({
       onError(error.toString());
     }, onDone: () {
       debugPrint("yt-dlp finished");
+      onComplete(); // Title fetching removed
     });
 
     ytDlpProcess.stderr.transform(utf8.decoder).listen((data) {
@@ -80,9 +89,7 @@ Future<void> startDownload({
     int exitCode = await ytDlpProcess.exitCode;
     if (exitCode == 0 || exitCode == 1) {
       debugPrint("Download complete");
-      String title = await _fetchDownloadedTitle(outputPath);
-      onTitleReceived(title);
-      onComplete();
+      onComplete(); // No title to fetch
     } else {
       debugPrint("Download failed with exit code $exitCode");
       onError("yt-dlp exited with code $exitCode");
@@ -93,18 +100,7 @@ Future<void> startDownload({
   }
 }
 
-Future<String> _fetchDownloadedTitle(String downloadPath) async {
-  try {
-    Directory dir = Directory(downloadPath);
-    List<FileSystemEntity> files = dir.listSync().whereType<File>().toList();
-    if (files.isNotEmpty) {
-      return p.basenameWithoutExtension(files.first.path);
-    }
-  } catch (e) {
-    debugPrint("Error fetching title: $e");
-  }
-  return "Unknown Title";
-}
+
 
 double _parseProgress(String output) {
   RegExp regex = RegExp(r'\b(\d+\.\d+)%');

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
 import 'package:youdon/models/download_task.dart';
-import '../services/downloader.dart';
-import '../utils/file_picker.dart';
+import '../services/downloader.dart'; // Make sure this path is correct
+import '../utils/file_picker.dart'; // Make sure this path is correct
 import 'components/download_input.dart';
 import 'components/ongoing_tasks.dart';
 import 'components/completed_tasks.dart';
@@ -18,7 +17,8 @@ class HomeScreen extends StatefulWidget {
   HomeScreenState createState() => HomeScreenState();
 }
 
-class HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _urlController = TextEditingController();
   String _selectedFormat = "mp4";
   String _selectedMode = "single";
@@ -123,15 +123,8 @@ class HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMi
             });
           }
         },
-        onTitleReceived: (title) {
-          if (isMounted) {
-            setState(() {
-              task.title = title.isNotEmpty ? title : "Untitled Video";
-            });
-          }
-        },
         onComplete: () {
-          debugPrint("Download Complete for: ${task.title ?? task.url}");
+          debugPrint("Download Complete for: ${task.url}"); // Log URL
           if (isMounted) {
             setState(() {
               task.isCompleted = true;
@@ -142,7 +135,7 @@ class HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMi
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Download of ${task.title ?? task.url} complete!'),
+                  content: Text('Download of ${task.url} complete!'), // Show URL
                   duration: const Duration(seconds: 3),
                 ),
               );

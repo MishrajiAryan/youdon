@@ -1,3 +1,4 @@
+// completed_tasks.dart
 import 'package:flutter/material.dart';
 import 'package:youdon/models/download_task.dart';
 
@@ -17,7 +18,7 @@ class CompletedTasks extends StatelessWidget {
       itemBuilder: (context, index) {
         final task = completedTasks[index];
         return ListTile(
-          title: Text(task.title ?? "Unknown Video"), // Show title
+          title: Text(task.url), // Display URL
           subtitle: Text('${task.format} - ${task.mode}'),
         );
       },

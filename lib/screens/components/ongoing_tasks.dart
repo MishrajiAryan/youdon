@@ -1,3 +1,4 @@
+// ongoing_tasks.dart
 import 'package:flutter/material.dart';
 import 'package:youdon/models/download_task.dart';
 
@@ -17,7 +18,7 @@ class OngoingTasks extends StatelessWidget {
       itemBuilder: (context, index) {
         final task = downloadQueue[index];
         return ListTile(
-          title: Text(task.title ?? "Fetching title..."), // Show title or placeholder
+          title: Text(task.url), // Display URL
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
