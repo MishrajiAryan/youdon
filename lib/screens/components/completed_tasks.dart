@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import Provider
 import '/models/download_manager.dart'; // Import your DownloadManager
 
-
 class CompletedTasks extends StatelessWidget {
   const CompletedTasks({super.key});
 
@@ -20,7 +19,6 @@ class CompletedTasks extends StatelessWidget {
           itemBuilder: (context, index) {
             final task = downloadManager.completedTasks[index];
             return ListTile(
-              title: Text(task.url),
               subtitle: Text('${task.format} - ${task.mode}'),
               trailing: IconButton(
                 icon: const Icon(Icons.delete),

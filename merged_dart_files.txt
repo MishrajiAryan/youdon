@@ -1,0 +1,783 @@
+File Location: lib\main.dart
+File Name: main.dart
+File Code:
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'screens/home_screen.dart'; // Correct path
+import 'theme_notifier.dart';
+import 'models/download_manager.dart'; // Import your DownloadManager
+
+void main() {
+  runApp(
+    MultiProvider( // Use MultiProvider
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ThemeNotifier(),
+        ),
+        ChangeNotifierProvider( // Add this for DownloadManager
+          create: (_) => DownloadManager(),
+        ),
+      ],
+      child: const YouDonApp(), // const added
+    ),
+  );
+}
+
+class YouDonApp extends StatelessWidget {
+  const YouDonApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+          title: 'YouDon - YouTube Downloader',
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: themeNotifier.themeMode,
+          home: const HomeScreen(), // const added
+        );
+      },
+    );
+  }
+}
+----------------------------------------
+File Location: lib\theme_notifier.dart
+File Name: theme_notifier.dart
+File Code:
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+
+class ThemeNotifier with ChangeNotifier {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  ThemeMode get themeMode => _themeMode;
+
+  ThemeNotifier() {
+    _loadThemeMode(); // Load theme mode from preferences
+  }
+
+  Future<void> _loadThemeMode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int themeModeIndex = prefs.getInt('themeMode') ?? ThemeMode.system.index;
+    _themeMode = ThemeMode.values[themeModeIndex];
+    notifyListeners();
+  }
+
+  void setTheme(ThemeMode themeMode) {
+    _themeMode = themeMode;
+    _saveThemeMode(); // Save theme mode to preferences
+    notifyListeners();
+  }
+
+  void toggleTheme() {
+    _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    _saveThemeMode(); // Save theme mode to preferences
+    notifyListeners();
+  }
+
+  Future<void> _saveThemeMode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('themeMode', _themeMode.index);
+  }
+}
+----------------------------------------
+File Location: lib\models\download_manager.dart
+File Name: download_manager.dart
+File Code:
+// download_manager.dart
+import 'package:flutter/material.dart';
+import 'download_task.dart'; // Import your DownloadTask model
+import '../services/downloader.dart'; // Import your downloader service
+import '../utils/file_picker.dart'; // Import file picker if needed for setting path
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+
+class DownloadManager extends ChangeNotifier {
+  List<DownloadTask> downloadQueue = [];
+  List<DownloadTask> completedTasks = [];
+  String? downloadPath;
+  bool _isDownloading = false; // Track active downloads
+
+  DownloadManager() {
+    _loadPreferences(); // Load preferences
+  }
+
+  Future<void> _loadPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    downloadPath = prefs.getString('downloadPath');
+
+    String? completedTasksJson = prefs.getString('completedTasks');
+    try {
+      completedTasks = (jsonDecode(completedTasksJson!) as List)
+          .map((taskJson) => DownloadTask.fromJson(taskJson))
+          .toList();
+    } catch (e) {
+      debugPrint("Error loading completed tasks: $e");
+      completedTasks = [];
+    }
+  }
+
+  Future<void> _savePreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('downloadPath', downloadPath ?? "");
+
+    String completedTasksJson =
+        jsonEncode(completedTasks.map((task) => task.toJson()).toList());
+    await prefs.setString('completedTasks', completedTasksJson);
+  }
+
+  Future<void> setDownloadPath() async {
+    String? path = await pickDownloadFolder();
+    if (path != null) {
+      downloadPath = path;
+      _savePreferences();
+      notifyListeners();
+    }
+  }
+
+  void addToQueue(DownloadTask task) {
+    downloadQueue.add(task);
+    notifyListeners();
+    _processNextDownload(); // Start queue processing
+  }
+
+  void _processNextDownload() {
+    if (_isDownloading || downloadQueue.isEmpty) return;
+
+    _isDownloading = true; // Mark as downloading
+    DownloadTask task = downloadQueue.first;
+    _startDownload(task);
+  }
+
+  void _startDownload(DownloadTask task) async {
+    task.isDownloading = true;
+    notifyListeners();
+
+    try {
+      await startDownload(
+        url: task.url,
+        format: task.format,
+        downloadMode: task.mode,
+        downloadPath: downloadPath!,
+        onProgress: (progress) {
+          task.progress = progress;
+          notifyListeners();
+        },
+        onComplete: () {
+          downloadComplete(task);
+        },
+        onError: (errorMessage) {
+          task.isDownloading = false;
+          _isDownloading = false; // Release lock on failure
+          notifyListeners();
+          debugPrint("Download Error for: ${task.url}: $errorMessage");
+          _processNextDownload(); // Move to next download if error occurs
+        },
+        createPlaylistFolder: true,
+      );
+    } catch (e) {
+      task.isDownloading = false;
+      _isDownloading = false;
+      notifyListeners();
+      debugPrint("Exception in _startDownload: $e");
+      _processNextDownload(); // Continue processing
+    }
+  }
+
+  void downloadComplete(DownloadTask task) {
+    task.isDownloading = false;
+    task.isCompleted = true;
+    downloadQueue.remove(task);
+
+    bool alreadyCompleted = completedTasks.any((existingTask) =>
+        existingTask.url == task.url &&
+        existingTask.format == task.format &&
+        existingTask.mode == task.mode);
+
+    if (!alreadyCompleted) {
+      completedTasks.add(task);
+      _savePreferences();
+    }
+
+    _isDownloading = false; // Allow next download
+    notifyListeners();
+    _processNextDownload(); // Start the next task in queue
+  }
+
+  void removeCompletedTask(DownloadTask task) {
+    completedTasks.remove(task);
+    _savePreferences();
+    notifyListeners();
+  }
+}
+
+----------------------------------------
+File Location: lib\models\download_task.dart
+File Name: download_task.dart
+File Code:
+class DownloadTask {
+  String url;
+  String format;
+  String mode;
+  String downloadPath;
+  String title; // New field for video title
+  double progress;
+  bool isCompleted;
+  bool isDownloading;
+
+  DownloadTask({
+    required this.url,
+    required this.format,
+    required this.mode,
+    required this.downloadPath,
+    required this.title, // Initialize title
+    this.progress = 0.0,
+    this.isCompleted = false,
+    this.isDownloading = false,
+  });
+
+  factory DownloadTask.fromJson(Map<String, dynamic> json) => DownloadTask(
+        url: json['url'],
+        format: json['format'],
+        mode: json['mode'],
+        downloadPath: json['downloadPath'],
+        title: json['title'], // Load title
+        progress: (json['progress'] as num).toDouble(),
+        isCompleted: json['isCompleted'],
+        isDownloading: json['isDownloading'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'url': url,
+        'format': format,
+        'mode': mode,
+        'downloadPath': downloadPath,
+        'title': title, // Save title
+        'progress': progress,
+        'isCompleted': isCompleted,
+        'isDownloading': isDownloading,
+      };
+}
+
+----------------------------------------
+File Location: lib\screens\home_screen.dart
+File Name: home_screen.dart
+File Code:
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'components/download_input.dart';
+import 'components/ongoing_tasks.dart';
+import 'components/completed_tasks.dart';
+import '../theme_notifier.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  bool _showDownloadInput = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (mounted) {
+        setState(() {
+          _showDownloadInput = _tabController.index == 0;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("YouDon - YouTube Downloader",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        elevation: 5,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Provider.of<ThemeNotifier>(context).themeMode == ThemeMode.dark
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+            ),
+            onPressed: () {
+              final themeNotifier =
+                  Provider.of<ThemeNotifier>(context, listen: false);
+              themeNotifier.toggleTheme();
+            },
+          ),
+        ],
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Colors.blueAccent,
+          indicatorWeight: 3.0,
+          tabs: const [
+            Tab(icon: Icon(Icons.download), text: 'Ongoing'),
+            Tab(icon: Icon(Icons.check_circle), text: 'Completed'),
+          ],
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            AnimatedOpacity(
+              opacity: _showDownloadInput ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: _showDownloadInput ? const DownloadInput() : const SizedBox(),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  OngoingTasks(),
+                  CompletedTasks(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+----------------------------------------
+File Location: lib\screens\components\completed_tasks.dart
+File Name: completed_tasks.dart
+File Code:
+// completed_tasks.dart
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import Provider
+import '/models/download_manager.dart'; // Import your DownloadManager
+
+class CompletedTasks extends StatelessWidget {
+  const CompletedTasks({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DownloadManager>(
+      builder: (context, downloadManager, child) {
+        if (downloadManager.completedTasks.isEmpty) {
+          return const Center(child: Text("No completed downloads yet."));
+        }
+
+        return ListView.builder(
+          itemCount: downloadManager.completedTasks.length,
+          itemBuilder: (context, index) {
+            final task = downloadManager.completedTasks[index];
+            return ListTile(
+              title: Text(task.title), // Show video title instead of URL
+              subtitle: Text('${task.format} - ${task.mode}'),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  downloadManager.removeCompletedTask(task);
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+----------------------------------------
+File Location: lib\screens\components\download_input.dart
+File Name: download_input.dart
+File Code:
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'dart:io';
+import '/models/download_manager.dart';
+import '/models/download_task.dart';
+import '/utils/file_picker.dart';
+
+class DownloadInput extends StatefulWidget {
+  const DownloadInput({super.key});
+
+  @override
+  State<DownloadInput> createState() => _DownloadInputState();
+}
+
+class _DownloadInputState extends State<DownloadInput> {
+  final TextEditingController _urlController = TextEditingController();
+  String _selectedFormat = "mp4";
+  String _selectedMode = "single";
+
+  Future<String?> fetchVideoTitle(String url) async {
+    try {
+      ProcessResult result = await Process.run(
+        'yt-dlp',
+        ['--get-title', url],
+        runInShell: true,
+      );
+
+      if (result.exitCode == 0) {
+        return result.stdout.trim(); // Extracted video title
+      } else {
+        debugPrint("Error fetching title: ${result.stderr}");
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Exception fetching title: $e");
+      return null;
+    }
+  }
+
+  void _addToQueue(BuildContext context) async {
+    final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+    final url = _urlController.text;
+
+    if (url.isNotEmpty && downloadManager.downloadPath != null) {
+      String? title = await fetchVideoTitle(url);
+      if (title != null) {
+        final newTask = DownloadTask(
+          url: url,
+          format: _selectedFormat,
+          mode: _selectedMode,
+          downloadPath: downloadManager.downloadPath!,
+          title: title, // Store extracted title
+        );
+        downloadManager.addToQueue(newTask);
+        _urlController.clear();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // URL Input Field
+            TextField(
+              controller: _urlController,
+              decoration: InputDecoration(
+                labelText: "Enter YouTube URL",
+                prefixIcon: const Icon(Icons.link),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Format & Mode Selection
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildDropdown(
+                  value: _selectedFormat,
+                  items: const ["mp4", "mp3"],
+                  onChanged: (value) => setState(() => _selectedFormat = value),
+                  icon: Icons.video_library,
+                  label: "Format",
+                ),
+                _buildDropdown(
+                  value: _selectedMode,
+                  items: const ["single", "playlist"],
+                  onChanged: (value) => setState(() => _selectedMode = value),
+                  icon: Icons.playlist_play,
+                  label: "Mode",
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+
+            // Folder Selection
+            Consumer<DownloadManager>(
+              builder: (context, downloadManager, child) {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        downloadManager.downloadPath ?? "No download path selected",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.grey.shade700),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        final path = await pickDownloadFolder();
+                        if (path != null) {
+                          downloadManager.setDownloadPath();
+                        }
+                      },
+                      icon: const Icon(Icons.folder_open),
+                    ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 10),
+
+            // Download Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                icon: const Icon(Icons.download),
+                label: const Text("Add to Queue"),
+                onPressed: () => _addToQueue(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Custom Dropdown Builder
+  Widget _buildDropdown({
+    required String value,
+    required List<String> items,
+    required void Function(String) onChanged,
+    required IconData icon,
+    required String label,
+  }) {
+    return Expanded(
+      child: DropdownButtonFormField<String>(
+        value: value,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+        onChanged: (newValue) => onChanged(newValue!),
+        items: items.map((item) => DropdownMenuItem(value: item, child: Text(item))).toList(),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _urlController.dispose();
+    super.dispose();
+  }
+}
+
+----------------------------------------
+File Location: lib\screens\components\ongoing_tasks.dart
+File Name: ongoing_tasks.dart
+File Code:
+// ongoing_tasks.dart
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import Provider
+import '/models/download_manager.dart'; // Import your DownloadManager
+
+class OngoingTasks extends StatelessWidget {
+  const OngoingTasks({super.key}); // No longer takes downloadQueue as a parameter
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DownloadManager>( // Use Consumer
+      builder: (context, downloadManager, child) {
+        if (downloadManager.downloadQueue.isEmpty) {
+          return const Center(child: Text("No downloads in progress."));
+        }
+
+        return ListView.builder(
+          itemCount: downloadManager.downloadQueue.length,
+          itemBuilder: (context, index) {
+            final task = downloadManager.downloadQueue[index];
+            return ListTile(
+              title: Text(task.title), // Show video title instead of URL
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${task.format} - ${task.mode}'),
+                  if (task.isDownloading)
+                    LinearProgressIndicator(
+                      value: task.progress,
+                    ),
+                ],
+              ),
+              trailing: task.isDownloading
+                  ? Text('${(task.progress * 100).toStringAsFixed(2)}%')
+                  : const Text("Queued"),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+----------------------------------------
+File Location: lib\services\downloader.dart
+File Name: downloader.dart
+File Code:
+// downloader.dart
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as p;
+
+Future<void> startDownload({
+  required String url,
+  required String format,
+  required String downloadMode,
+  required String downloadPath,
+  required Function(double) onProgress,
+  required Function(String) onError,
+  required Function() onComplete,
+  required bool createPlaylistFolder,
+}) async {
+  String ytDlpPath = "dependencies/yt-dlp.exe"; // Path to yt-dlp executable
+  String ffmpegPath = "dependencies/ffmpeg/bin/ffmpeg.exe"; // Path to ffmpeg
+
+  Map<String, String> envVars = {"FFMPEG_BINARY": ffmpegPath};
+
+  List<String> ytDlpArgs = [
+    "--ffmpeg-location",
+    ffmpegPath,
+    "--add-metadata",
+    "--embed-thumbnail",
+  ];
+
+  String outputPath = downloadPath;
+  String fileNameTemplate = "%(title)s.%(ext)s"; // File naming template
+
+  if (downloadMode == "playlist" && createPlaylistFolder) {
+    String playlistFolderName = "%(playlist_title)s"; // Playlist folder name
+    outputPath = p.join(downloadPath, playlistFolderName);
+
+    try {
+      await Directory(outputPath).create(recursive: true);
+      debugPrint("Playlist folder created: $outputPath");
+    } catch (e) {
+      onError("Error creating playlist folder: $e");
+      return;
+    }
+  }
+
+  ytDlpArgs.addAll(["-o", p.join(outputPath, fileNameTemplate)]);
+
+  if (format == "mp4") {
+    ytDlpArgs.addAll(["-f", "bestvideo+bestaudio", "--merge-output-format", "mp4"]);
+  } else {
+    ytDlpArgs.addAll([
+      "-f",
+      "bestaudio",
+      "--extract-audio",
+      "--audio-format",
+      "mp3",
+      "--audio-quality",
+      "0"
+    ]);
+  }
+
+  ytDlpArgs.add(downloadMode == "single" ? "--no-playlist" : "--yes-playlist");
+  ytDlpArgs.add(url);
+
+  try {
+    debugPrint("Starting download...");
+    Process ytDlpProcess = await Process.start(
+      ytDlpPath,
+      ytDlpArgs,
+      environment: envVars,
+    );
+
+    ytDlpProcess.stdout.transform(utf8.decoder).listen((data) {
+      debugPrint("yt-dlp output: $data");
+      double progress = _parseProgress(data);
+      onProgress(progress);
+    }, onError: (error) {
+      debugPrint("yt-dlp error: $error");
+      onError(error.toString());
+    }, onDone: () {
+      debugPrint("yt-dlp finished");
+      onComplete(); // Title fetching removed
+    });
+
+    ytDlpProcess.stderr.transform(utf8.decoder).listen((data) {
+      debugPrint("yt-dlp error: $data");
+      onError(data);
+    });
+
+    int exitCode = await ytDlpProcess.exitCode;
+    if (exitCode == 0 || exitCode == 1) {
+      debugPrint("Download complete");
+      onComplete(); // No title to fetch
+    } else {
+      debugPrint("Download failed with exit code $exitCode");
+      onError("yt-dlp exited with code $exitCode");
+    }
+  } catch (e) {
+    debugPrint("Error during download: $e");
+    onError(e.toString());
+  }
+}
+
+double _parseProgress(String output) {
+  RegExp regex = RegExp(r'\b(\d+\.\d+)%');
+  Match? match = regex.firstMatch(output);
+  return match != null ? double.parse(match.group(1)!) / 100 : 0.0;
+}
+----------------------------------------
+File Location: lib\utils\file_picker.dart
+File Name: file_picker.dart
+File Code:
+// file_picker.dart
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart'; // Make sure you have this package
+
+Future<String?> pickDownloadFolder() async {
+  try {
+    String? directory = await FilePicker.platform.getDirectoryPath();
+    return directory;
+    } catch (e) {
+    // Handle exceptions (permissions, etc.)
+    debugPrint("Error picking directory: $e");
+    return null;
+  }
+}
+
+----------------------------------------
+File Location: lib\utils\youtube_utils.dart
+File Name: youtube_utils.dart
+File Code:
+import 'dart:io';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+
+Future<String?> fetchVideoTitle(String url) async {
+  try {
+    ProcessResult result = await Process.run(
+      'yt-dlp', // Ensure yt-dlp is installed and accessible
+      ['--get-title', url],
+      runInShell: true,
+    );
+
+    if (result.exitCode == 0) {
+      return result.stdout.trim(); // Extracted video title
+    } else {
+      debugPrint("Error fetching title: ${result.stderr}");
+      return null;
+    }
+  } catch (e) {
+    debugPrint("Exception fetching title: $e");
+    return null;
+  }
+}
+
+----------------------------------------

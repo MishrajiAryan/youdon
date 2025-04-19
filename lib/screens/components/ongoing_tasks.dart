@@ -19,7 +19,6 @@ class OngoingTasks extends StatelessWidget {
           itemBuilder: (context, index) {
             final task = downloadManager.downloadQueue[index];
             return ListTile(
-              title: Text(task.url), // Display URL
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

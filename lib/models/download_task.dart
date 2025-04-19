@@ -1,4 +1,3 @@
-// download_task.dart
 class DownloadTask {
   String url;
   String format;

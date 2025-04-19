@@ -30,17 +30,21 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("YouDon - YouTube Downloader"),
+        title: const Text("YouDon - YouTube Downloader",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        elevation: 5,
         actions: [
-          Switch(
-            value: Provider.of<ThemeNotifier>(context).themeMode ==
-                ThemeMode.dark,
-            onChanged: (value) {
+          IconButton(
+            icon: Icon(
+              Provider.of<ThemeNotifier>(context).themeMode == ThemeMode.dark
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+            ),
+            onPressed: () {
               final themeNotifier =
                   Provider.of<ThemeNotifier>(context, listen: false);
               themeNotifier.toggleTheme();
@@ -49,9 +53,11 @@ class _HomeScreenState extends State<HomeScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
+          indicatorColor: Colors.blueAccent,
+          indicatorWeight: 3.0,
           tabs: const [
-            Tab(text: 'Ongoing Tasks'),
-            Tab(text: 'Completed Tasks'),
+            Tab(icon: Icon(Icons.download), text: 'Ongoing'),
+            Tab(icon: Icon(Icons.check_circle), text: 'Completed'),
           ],
         ),
       ),
@@ -59,14 +65,18 @@ class _HomeScreenState extends State<HomeScreen>
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            if (_showDownloadInput) const DownloadInput(), // Use const here
+            AnimatedOpacity(
+              opacity: _showDownloadInput ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: _showDownloadInput ? const DownloadInput() : const SizedBox(),
+            ),
             const SizedBox(height: 20),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: const [ // Use const here
-                  OngoingTasks(), // Use const here
-                  CompletedTasks(), // Use const here
+                children: const [
+                  OngoingTasks(),
+                  CompletedTasks(),
                 ],
               ),
             ),
