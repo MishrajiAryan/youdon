@@ -16,13 +16,43 @@ class _DownloadInputState extends State<DownloadInput> {
   String _selectedFormat = "mp4";
   String _selectedMode = "single";
 
+  void _showSnackBar(String message, {Color? color, IconData? icon}) {
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: color ?? Colors.blueGrey,
+          content: Row(
+            children: [
+              if (icon != null) ...[
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 10),
+              ],
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(color: Colors.white),
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final downloadButtonColor = isDark ? Colors.pinkAccent : Theme.of(context).colorScheme.primary;
+
     return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 7,
+      shadowColor: Colors.black26,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
             // URL Input Field
@@ -31,32 +61,89 @@ class _DownloadInputState extends State<DownloadInput> {
               decoration: InputDecoration(
                 labelText: "Enter YouTube URL",
                 prefixIcon: const Icon(Icons.link),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
 
-            // Format & Mode Selection
+            // Format & Mode Selection in a Row
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildDropdown(
-                  value: _selectedFormat,
-                  items: const ["mp4", "mp3"],
-                  onChanged: (value) => setState(() => _selectedFormat = value),
-                  icon: Icons.video_library,
-                  label: "Format",
+                // Format Dropdown (Video/Audio)
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedFormat,
+                    decoration: InputDecoration(
+                      labelText: "Format",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                    ),
+                    isExpanded: true,
+                    onChanged: (value) => setState(() => _selectedFormat = value!),
+                    items: const [
+                      DropdownMenuItem(
+                        value: "mp4",
+                        child: Row(
+                          children: [
+                            Icon(Icons.videocam, color: Colors.blue),
+                            SizedBox(width: 8),
+                            Text("Video"),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "mp3",
+                        child: Row(
+                          children: [
+                            Icon(Icons.audiotrack, color: Colors.deepPurple),
+                            SizedBox(width: 8),
+                            Text("Audio"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                _buildDropdown(
-                  value: _selectedMode,
-                  items: const ["single", "playlist"],
-                  onChanged: (value) => setState(() => _selectedMode = value),
-                  icon: Icons.playlist_play,
-                  label: "Mode",
+                const SizedBox(width: 16),
+
+                // Mode Dropdown (Single/Playlist)
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedMode,
+                    decoration: InputDecoration(
+                      labelText: "Mode",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                    ),
+                    isExpanded: true,
+                    onChanged: (value) => setState(() => _selectedMode = value!),
+                    items: const [
+                      DropdownMenuItem(
+                        value: "single",
+                        child: Row(
+                          children: [
+                            Icon(Icons.music_note, color: Colors.teal),
+                            SizedBox(width: 8),
+                            Text("Single"),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "playlist",
+                        child: Row(
+                          children: [
+                            Icon(Icons.queue_music, color: Colors.orange),
+                            SizedBox(width: 8),
+                            Text("Playlist"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
 
             // Folder Selection
             Consumer<DownloadManager>(
@@ -67,7 +154,11 @@ class _DownloadInputState extends State<DownloadInput> {
                       child: Text(
                         downloadManager.downloadPath ?? "No download path selected",
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey.shade700),
+                        style: TextStyle(
+                          color: downloadManager.downloadPath != null
+                              ? Colors.grey.shade700
+                              : Colors.red.shade300,
+                        ),
                       ),
                     ),
                     IconButton(
@@ -75,67 +166,74 @@ class _DownloadInputState extends State<DownloadInput> {
                         final path = await pickDownloadFolder();
                         if (path != null) {
                           downloadManager.setDownloadPath();
+                          _showSnackBar(
+                            "Download folder set.",
+                            color: Colors.green,
+                            icon: Icons.folder_open,
+                          );
                         }
                       },
                       icon: const Icon(Icons.folder_open),
+                      tooltip: "Select Download Folder",
                     ),
                   ],
                 );
               },
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
 
             // Download Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 4,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  backgroundColor: downloadButtonColor,
+                  foregroundColor: Colors.white,
                 ),
                 icon: const Icon(Icons.download),
                 label: const Text("Add to Queue"),
                 onPressed: () {
                   final downloadManager =
                       Provider.of<DownloadManager>(context, listen: false);
-                  if (_urlController.text.isNotEmpty &&
-                      downloadManager.downloadPath != null) {
-                    final newTask = DownloadTask(
-                      url: _urlController.text,
-                      format: _selectedFormat,
-                      mode: _selectedMode,
-                      downloadPath: downloadManager.downloadPath!,
+                  final url = _urlController.text.trim();
+
+                  if (url.isEmpty) {
+                    _showSnackBar(
+                      "Please enter a YouTube URL.",
+                      color: Colors.red,
+                      icon: Icons.error,
                     );
-                    downloadManager.addToQueue(newTask);
-                    _urlController.clear();
+                    return;
                   }
+                  if (downloadManager.downloadPath == null) {
+                    _showSnackBar(
+                      "Please select a download folder.",
+                      color: Colors.red,
+                      icon: Icons.folder_off,
+                    );
+                    return;
+                  }
+                  final newTask = DownloadTask(
+                    url: url,
+                    format: _selectedFormat,
+                    mode: _selectedMode,
+                    downloadPath: downloadManager.downloadPath!,
+                  );
+                  downloadManager.addToQueue(newTask);
+                  _urlController.clear();
+                  _showSnackBar(
+                    "Download added to queue.",
+                    color: Colors.green,
+                    icon: Icons.check_circle,
+                  );
                 },
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // Custom Dropdown Builder
-  Widget _buildDropdown({
-    required String value,
-    required List<String> items,
-    required void Function(String) onChanged,
-    required IconData icon,
-    required String label,
-  }) {
-    return Expanded(
-      child: DropdownButtonFormField<String>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-        onChanged: (newValue) => onChanged(newValue!),
-        items: items.map((item) => DropdownMenuItem(value: item, child: Text(item))).toList(),
       ),
     );
   }

@@ -1,3 +1,5 @@
+// lib/models/download_task.dart
+
 class DownloadTask {
   String url;
   String format;
@@ -6,6 +8,8 @@ class DownloadTask {
   double progress;
   bool isCompleted;
   bool isDownloading;
+  bool isProcessing; // <-- NEW: Track processing state (FFmpeg, extraction, etc.)
+  String? fileName;
 
   DownloadTask({
     required this.url,
@@ -15,6 +19,8 @@ class DownloadTask {
     this.progress = 0.0,
     this.isCompleted = false,
     this.isDownloading = false,
+    this.isProcessing = false, // <-- NEW: default to false
+    this.fileName,
   });
 
   factory DownloadTask.fromJson(Map<String, dynamic> json) => DownloadTask(
@@ -25,6 +31,8 @@ class DownloadTask {
         progress: (json['progress'] as num).toDouble(),
         isCompleted: json['isCompleted'],
         isDownloading: json['isDownloading'],
+        isProcessing: json['isProcessing'] ?? false, // <-- NEW: handle null for older data
+        fileName: json['fileName'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,5 +43,7 @@ class DownloadTask {
         'progress': progress,
         'isCompleted': isCompleted,
         'isDownloading': isDownloading,
+        'isProcessing': isProcessing, // <-- NEW
+        'fileName': fileName,
       };
 }

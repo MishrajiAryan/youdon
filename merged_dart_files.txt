@@ -85,11 +85,11 @@ class ThemeNotifier with ChangeNotifier {
 File Location: lib\models\download_manager.dart
 File Name: download_manager.dart
 File Code:
-// download_manager.dart
+// lib/models/download_manager.dart
 import 'package:flutter/material.dart';
-import 'download_task.dart'; // Import your DownloadTask model
-import '../services/downloader.dart'; // Import your downloader service
-import '../utils/file_picker.dart'; // Import file picker if needed for setting path
+import 'download_task.dart';
+import '../services/downloader.dart';
+import '../utils/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -97,21 +97,22 @@ class DownloadManager extends ChangeNotifier {
   List<DownloadTask> downloadQueue = [];
   List<DownloadTask> completedTasks = [];
   String? downloadPath;
-  bool _isDownloading = false; // Track active downloads
+  bool _isDownloading = false;
 
   DownloadManager() {
-    _loadPreferences(); // Load preferences
+    _loadPreferences();
   }
 
   Future<void> _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     downloadPath = prefs.getString('downloadPath');
-
     String? completedTasksJson = prefs.getString('completedTasks');
     try {
-      completedTasks = (jsonDecode(completedTasksJson!) as List)
-          .map((taskJson) => DownloadTask.fromJson(taskJson))
-          .toList();
+      completedTasks = (completedTasksJson == null || completedTasksJson.isEmpty)
+          ? []
+          : (jsonDecode(completedTasksJson) as List)
+              .map((taskJson) => DownloadTask.fromJson(taskJson))
+              .toList();
     } catch (e) {
       debugPrint("Error loading completed tasks: $e");
       completedTasks = [];
@@ -121,7 +122,6 @@ class DownloadManager extends ChangeNotifier {
   Future<void> _savePreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('downloadPath', downloadPath ?? "");
-
     String completedTasksJson =
         jsonEncode(completedTasks.map((task) => task.toJson()).toList());
     await prefs.setString('completedTasks', completedTasksJson);
@@ -139,13 +139,12 @@ class DownloadManager extends ChangeNotifier {
   void addToQueue(DownloadTask task) {
     downloadQueue.add(task);
     notifyListeners();
-    _processNextDownload(); // Start queue processing
+    _processNextDownload();
   }
 
   void _processNextDownload() {
     if (_isDownloading || downloadQueue.isEmpty) return;
-
-    _isDownloading = true; // Mark as downloading
+    _isDownloading = true;
     DownloadTask task = downloadQueue.first;
     _startDownload(task);
   }
@@ -164,15 +163,20 @@ class DownloadManager extends ChangeNotifier {
           task.progress = progress;
           notifyListeners();
         },
+        // NEW: fetch file name from yt-dlp output
+        onFileName: (fileName) {
+          task.fileName = fileName;
+          notifyListeners();
+        },
         onComplete: () {
           downloadComplete(task);
         },
         onError: (errorMessage) {
           task.isDownloading = false;
-          _isDownloading = false; // Release lock on failure
+          _isDownloading = false;
           notifyListeners();
           debugPrint("Download Error for: ${task.url}: $errorMessage");
-          _processNextDownload(); // Move to next download if error occurs
+          _processNextDownload();
         },
         createPlaylistFolder: true,
       );
@@ -181,7 +185,7 @@ class DownloadManager extends ChangeNotifier {
       _isDownloading = false;
       notifyListeners();
       debugPrint("Exception in _startDownload: $e");
-      _processNextDownload(); // Continue processing
+      _processNextDownload();
     }
   }
 
@@ -200,13 +204,19 @@ class DownloadManager extends ChangeNotifier {
       _savePreferences();
     }
 
-    _isDownloading = false; // Allow next download
+    _isDownloading = false;
     notifyListeners();
-    _processNextDownload(); // Start the next task in queue
+    _processNextDownload();
   }
 
   void removeCompletedTask(DownloadTask task) {
     completedTasks.remove(task);
+    _savePreferences();
+    notifyListeners();
+  }
+
+  void clearAllCompletedTasks() {
+    completedTasks.clear();
     _savePreferences();
     notifyListeners();
   }
@@ -221,20 +231,20 @@ class DownloadTask {
   String format;
   String mode;
   String downloadPath;
-  String title; // New field for video title
   double progress;
   bool isCompleted;
   bool isDownloading;
+  String? fileName; // <-- Add this
 
   DownloadTask({
     required this.url,
     required this.format,
     required this.mode,
     required this.downloadPath,
-    required this.title, // Initialize title
     this.progress = 0.0,
     this.isCompleted = false,
     this.isDownloading = false,
+    this.fileName, // <-- Add this
   });
 
   factory DownloadTask.fromJson(Map<String, dynamic> json) => DownloadTask(
@@ -242,10 +252,10 @@ class DownloadTask {
         format: json['format'],
         mode: json['mode'],
         downloadPath: json['downloadPath'],
-        title: json['title'], // Load title
         progress: (json['progress'] as num).toDouble(),
         isCompleted: json['isCompleted'],
         isDownloading: json['isDownloading'],
+        fileName: json['fileName'], // <-- Add this
       );
 
   Map<String, dynamic> toJson() => {
@@ -253,10 +263,10 @@ class DownloadTask {
         'format': format,
         'mode': mode,
         'downloadPath': downloadPath,
-        'title': title, // Save title
         'progress': progress,
         'isCompleted': isCompleted,
         'isDownloading': isDownloading,
+        'fileName': fileName, // <-- Add this
       };
 }
 
@@ -359,35 +369,76 @@ File Name: completed_tasks.dart
 File Code:
 // completed_tasks.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Import Provider
-import '/models/download_manager.dart'; // Import your DownloadManager
+import 'package:provider/provider.dart';
+import '/models/download_manager.dart';
 
-class CompletedTasks extends StatelessWidget {
+class CompletedTasks extends StatefulWidget {
   const CompletedTasks({super.key});
+
+  @override
+  State<CompletedTasks> createState() => _CompletedTasksState();
+}
+
+class _CompletedTasksState extends State<CompletedTasks> {
+  bool _recentFirst = true;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<DownloadManager>(
       builder: (context, downloadManager, child) {
-        if (downloadManager.completedTasks.isEmpty) {
+        var completed = List.of(downloadManager.completedTasks);
+        if (_recentFirst) {
+          completed = completed.reversed.toList();
+
+        }
+
+        if (completed.isEmpty) {
           return const Center(child: Text("No completed downloads yet."));
         }
 
-        return ListView.builder(
-          itemCount: downloadManager.completedTasks.length,
-          itemBuilder: (context, index) {
-            final task = downloadManager.completedTasks[index];
-            return ListTile(
-              title: Text(task.title), // Show video title instead of URL
-              subtitle: Text('${task.format} - ${task.mode}'),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  downloadManager.removeCompletedTask(task);
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton.icon(
+                  icon: Icon(_recentFirst ? Icons.arrow_downward : Icons.arrow_upward),
+                  label: Text(_recentFirst ? "Recent First" : "Oldest First"),
+                  onPressed: () => setState(() => _recentFirst = !_recentFirst),
+                ),
+                TextButton.icon(
+                  icon: const Icon(Icons.delete_sweep),
+                  label: const Text("Clear All"),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  onPressed: () {
+                    downloadManager.clearAllCompletedTasks();
+                  },
+                ),
+              ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: completed.length,
+                itemBuilder: (context, index) {
+                  final task = completed[index];
+                  return ListTile(
+                    title: Text(
+                      task.fileName ?? task.url,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text('${task.format} - ${task.mode}'),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        downloadManager.removeCompletedTask(task);
+                      },
+                    ),
+                  );
                 },
               ),
-            );
-          },
+            ),
+          ],
         );
       },
     );
@@ -400,7 +451,6 @@ File Name: download_input.dart
 File Code:
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 import '/models/download_manager.dart';
 import '/models/download_task.dart';
 import '/utils/file_picker.dart';
@@ -416,46 +466,6 @@ class _DownloadInputState extends State<DownloadInput> {
   final TextEditingController _urlController = TextEditingController();
   String _selectedFormat = "mp4";
   String _selectedMode = "single";
-
-  Future<String?> fetchVideoTitle(String url) async {
-    try {
-      ProcessResult result = await Process.run(
-        'yt-dlp',
-        ['--get-title', url],
-        runInShell: true,
-      );
-
-      if (result.exitCode == 0) {
-        return result.stdout.trim(); // Extracted video title
-      } else {
-        debugPrint("Error fetching title: ${result.stderr}");
-        return null;
-      }
-    } catch (e) {
-      debugPrint("Exception fetching title: $e");
-      return null;
-    }
-  }
-
-  void _addToQueue(BuildContext context) async {
-    final downloadManager = Provider.of<DownloadManager>(context, listen: false);
-    final url = _urlController.text;
-
-    if (url.isNotEmpty && downloadManager.downloadPath != null) {
-      String? title = await fetchVideoTitle(url);
-      if (title != null) {
-        final newTask = DownloadTask(
-          url: url,
-          format: _selectedFormat,
-          mode: _selectedMode,
-          downloadPath: downloadManager.downloadPath!,
-          title: title, // Store extracted title
-        );
-        downloadManager.addToQueue(newTask);
-        _urlController.clear();
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -536,7 +546,21 @@ class _DownloadInputState extends State<DownloadInput> {
                 ),
                 icon: const Icon(Icons.download),
                 label: const Text("Add to Queue"),
-                onPressed: () => _addToQueue(context),
+                onPressed: () {
+                  final downloadManager =
+                      Provider.of<DownloadManager>(context, listen: false);
+                  if (_urlController.text.isNotEmpty &&
+                      downloadManager.downloadPath != null) {
+                    final newTask = DownloadTask(
+                      url: _urlController.text,
+                      format: _selectedFormat,
+                      mode: _selectedMode,
+                      downloadPath: downloadManager.downloadPath!,
+                    );
+                    downloadManager.addToQueue(newTask);
+                    _urlController.clear();
+                  }
+                },
               ),
             ),
           ],
@@ -584,11 +608,11 @@ import 'package:provider/provider.dart'; // Import Provider
 import '/models/download_manager.dart'; // Import your DownloadManager
 
 class OngoingTasks extends StatelessWidget {
-  const OngoingTasks({super.key}); // No longer takes downloadQueue as a parameter
+  const OngoingTasks({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DownloadManager>( // Use Consumer
+    return Consumer<DownloadManager>(
       builder: (context, downloadManager, child) {
         if (downloadManager.downloadQueue.isEmpty) {
           return const Center(child: Text("No downloads in progress."));
@@ -599,7 +623,11 @@ class OngoingTasks extends StatelessWidget {
           itemBuilder: (context, index) {
             final task = downloadManager.downloadQueue[index];
             return ListTile(
-              title: Text(task.title), // Show video title instead of URL
+              title: Text(
+                task.fileName ?? task.url,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -640,9 +668,10 @@ Future<void> startDownload({
   required Function(String) onError,
   required Function() onComplete,
   required bool createPlaylistFolder,
+  Function(String)? onFileName, // <-- NEW: optional callback
 }) async {
-  String ytDlpPath = "dependencies/yt-dlp.exe"; // Path to yt-dlp executable
-  String ffmpegPath = "dependencies/ffmpeg/bin/ffmpeg.exe"; // Path to ffmpeg
+  String ytDlpPath = "dependencies/yt-dlp.exe";
+  String ffmpegPath = "dependencies/ffmpeg/bin/ffmpeg.exe";
 
   Map<String, String> envVars = {"FFMPEG_BINARY": ffmpegPath};
 
@@ -654,10 +683,10 @@ Future<void> startDownload({
   ];
 
   String outputPath = downloadPath;
-  String fileNameTemplate = "%(title)s.%(ext)s"; // File naming template
+  String fileNameTemplate = "%(title)s.%(ext)s";
 
   if (downloadMode == "playlist" && createPlaylistFolder) {
-    String playlistFolderName = "%(playlist_title)s"; // Playlist folder name
+    String playlistFolderName = "%(playlist_title)s";
     outputPath = p.join(downloadPath, playlistFolderName);
 
     try {
@@ -675,13 +704,10 @@ Future<void> startDownload({
     ytDlpArgs.addAll(["-f", "bestvideo+bestaudio", "--merge-output-format", "mp4"]);
   } else {
     ytDlpArgs.addAll([
-      "-f",
-      "bestaudio",
+      "-f", "bestaudio",
       "--extract-audio",
-      "--audio-format",
-      "mp3",
-      "--audio-quality",
-      "0"
+      "--audio-format", "mp3",
+      "--audio-quality", "0"
     ]);
   }
 
@@ -698,6 +724,13 @@ Future<void> startDownload({
 
     ytDlpProcess.stdout.transform(utf8.decoder).listen((data) {
       debugPrint("yt-dlp output: $data");
+
+      // NEW: Extract file name and call onFileName
+      final match = RegExp(r'\[download\] Destination: (.+)').firstMatch(data);
+      if (match != null && onFileName != null) {
+        onFileName(match.group(1)!);
+      }
+
       double progress = _parseProgress(data);
       onProgress(progress);
     }, onError: (error) {
@@ -705,7 +738,7 @@ Future<void> startDownload({
       onError(error.toString());
     }, onDone: () {
       debugPrint("yt-dlp finished");
-      onComplete(); // Title fetching removed
+      onComplete();
     });
 
     ytDlpProcess.stderr.transform(utf8.decoder).listen((data) {
@@ -716,7 +749,7 @@ Future<void> startDownload({
     int exitCode = await ytDlpProcess.exitCode;
     if (exitCode == 0 || exitCode == 1) {
       debugPrint("Download complete");
-      onComplete(); // No title to fetch
+      onComplete();
     } else {
       debugPrint("Download failed with exit code $exitCode");
       onError("yt-dlp exited with code $exitCode");
@@ -732,6 +765,7 @@ double _parseProgress(String output) {
   Match? match = regex.firstMatch(output);
   return match != null ? double.parse(match.group(1)!) / 100 : 0.0;
 }
+
 ----------------------------------------
 File Location: lib\utils\file_picker.dart
 File Name: file_picker.dart
@@ -747,35 +781,6 @@ Future<String?> pickDownloadFolder() async {
     } catch (e) {
     // Handle exceptions (permissions, etc.)
     debugPrint("Error picking directory: $e");
-    return null;
-  }
-}
-
-----------------------------------------
-File Location: lib\utils\youtube_utils.dart
-File Name: youtube_utils.dart
-File Code:
-import 'dart:io';
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-
-Future<String?> fetchVideoTitle(String url) async {
-  try {
-    ProcessResult result = await Process.run(
-      'yt-dlp', // Ensure yt-dlp is installed and accessible
-      ['--get-title', url],
-      runInShell: true,
-    );
-
-    if (result.exitCode == 0) {
-      return result.stdout.trim(); // Extracted video title
-    } else {
-      debugPrint("Error fetching title: ${result.stderr}");
-      return null;
-    }
-  } catch (e) {
-    debugPrint("Exception fetching title: $e");
     return null;
   }
 }
