@@ -7,7 +7,6 @@ import '../utils/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-/// A simple class to represent UI messages for snackbars/banners.
 class DownloadManagerMessage {
   final String text;
   final Color color;
@@ -22,7 +21,9 @@ class DownloadManager extends ChangeNotifier {
   String? downloadPath;
   bool _isDownloading = false;
 
-  // Message for UI to display as snackbar/banner. UI should clear after showing.
+  // Track URLs being downloaded to prevent duplicates
+  Set<String> _activeDownloads = {};
+
   DownloadManagerMessage? uiMessage;
 
   DownloadManager() {
@@ -57,13 +58,11 @@ class DownloadManager extends ChangeNotifier {
     await prefs.setString('completedTasks', completedTasksJson);
   }
 
-  /// Sets a message for the UI to display (snackbar/banner).
   void _setMessage(String text, {required Color color, required IconData icon}) {
     uiMessage = DownloadManagerMessage(text, color: color, icon: icon);
     notifyListeners();
   }
 
-  /// Call this from UI after displaying the snackbar/banner.
   void clearMessage() {
     uiMessage = null;
   }
@@ -89,6 +88,49 @@ class DownloadManager extends ChangeNotifier {
   }
 
   void addToQueue(DownloadTask task) {
+    // Create unique identifier for this download
+    String taskId = "${task.url}_${task.format}_${task.mode}";
+    
+    // Check if already downloading or in queue
+    if (_activeDownloads.contains(taskId)) {
+      _setMessage(
+        "This download is already in progress.",
+        color: Colors.orange,
+        icon: Icons.warning,
+      );
+      return;
+    }
+
+    // Check if already in queue
+    bool alreadyInQueue = downloadQueue.any((existingTask) =>
+        existingTask.url == task.url &&
+        existingTask.format == task.format &&
+        existingTask.mode == task.mode);
+
+    if (alreadyInQueue) {
+      _setMessage(
+        "This download is already in the queue.",
+        color: Colors.orange,
+        icon: Icons.warning,
+      );
+      return;
+    }
+
+    // Check if already completed
+    bool alreadyCompleted = completedTasks.any((existingTask) =>
+        existingTask.url == task.url &&
+        existingTask.format == task.format &&
+        existingTask.mode == task.mode);
+
+    if (alreadyCompleted) {
+      _setMessage(
+        "This download was already completed.",
+        color: Colors.blue,
+        icon: Icons.check_circle,
+      );
+      return;
+    }
+
     downloadQueue.add(task);
     _setMessage(
       "Download added to queue.",
@@ -101,12 +143,25 @@ class DownloadManager extends ChangeNotifier {
 
   void _processNextDownload() {
     if (_isDownloading || downloadQueue.isEmpty) return;
-    _isDownloading = true;
+    
     DownloadTask task = downloadQueue.first;
+    String taskId = "${task.url}_${task.format}_${task.mode}";
+    
+    // Double-check if this download is already active
+    if (_activeDownloads.contains(taskId)) {
+      downloadQueue.removeAt(0);
+      _processNextDownload();
+      return;
+    }
+    
+    _isDownloading = true;
+    _activeDownloads.add(taskId);
     _startDownload(task);
   }
 
   void _startDownload(DownloadTask task) async {
+    String taskId = "${task.url}_${task.format}_${task.mode}";
+    
     task.isDownloading = true;
     task.isProcessing = false;
     notifyListeners();
@@ -118,7 +173,6 @@ class DownloadManager extends ChangeNotifier {
         downloadMode: task.mode,
         downloadPath: downloadPath!,
         onProgress: (progress) {
-          // Animated progress updates
           task.progress = progress;
           notifyListeners();
         },
@@ -131,47 +185,28 @@ class DownloadManager extends ChangeNotifier {
           notifyListeners();
         },
         onComplete: () {
-          downloadComplete(task);
-          _setMessage(
-            "Download complete!",
-            color: Colors.green,
-            icon: Icons.check_circle,
-          );
+          _downloadComplete(task, taskId);
         },
         onError: (errorMessage) {
-          task.isDownloading = false;
-          task.isProcessing = false;
-          _isDownloading = false;
-          notifyListeners();
-          _setMessage(
-            "Download failed: $errorMessage",
-            color: Colors.red,
-            icon: Icons.error,
-          );
-          _processNextDownload();
+          _downloadError(task, taskId, errorMessage);
         },
         createPlaylistFolder: true,
       );
     } catch (e) {
-      task.isDownloading = false;
-      task.isProcessing = false;
-      _isDownloading = false;
-      notifyListeners();
-      _setMessage(
-        "Download error: $e",
-        color: Colors.red,
-        icon: Icons.error,
-      );
-      _processNextDownload();
+      _downloadError(task, taskId, e.toString());
     }
   }
 
-  void downloadComplete(DownloadTask task) {
+  void _downloadComplete(DownloadTask task, String taskId) {
     task.isDownloading = false;
     task.isProcessing = false;
     task.isCompleted = true;
     downloadQueue.remove(task);
 
+    // Remove from active downloads
+    _activeDownloads.remove(taskId);
+
+    // Add to completed tasks if not already there
     bool alreadyCompleted = completedTasks.any((existingTask) =>
         existingTask.url == task.url &&
         existingTask.format == task.format &&
@@ -183,6 +218,29 @@ class DownloadManager extends ChangeNotifier {
     }
 
     _isDownloading = false;
+    _setMessage(
+      "Download complete!",
+      color: Colors.green,
+      icon: Icons.check_circle,
+    );
+    notifyListeners();
+    _processNextDownload();
+  }
+
+  void _downloadError(DownloadTask task, String taskId, String errorMessage) {
+    task.isDownloading = false;
+    task.isProcessing = false;
+    downloadQueue.remove(task);
+    
+    // Remove from active downloads
+    _activeDownloads.remove(taskId);
+    
+    _isDownloading = false;
+    _setMessage(
+      "Download failed: $errorMessage",
+      color: Colors.red,
+      icon: Icons.error,
+    );
     notifyListeners();
     _processNextDownload();
   }
@@ -205,6 +263,25 @@ class DownloadManager extends ChangeNotifier {
       "All completed tasks cleared.",
       color: Colors.red,
       icon: Icons.delete_sweep,
+    );
+    notifyListeners();
+  }
+
+  // Method to cancel a download if needed
+  void cancelDownload(DownloadTask task) {
+    String taskId = "${task.url}_${task.format}_${task.mode}";
+    downloadQueue.remove(task);
+    _activeDownloads.remove(taskId);
+    
+    if (task.isDownloading && _isDownloading) {
+      _isDownloading = false;
+      _processNextDownload();
+    }
+    
+    _setMessage(
+      "Download cancelled.",
+      color: Colors.orange,
+      icon: Icons.cancel,
     );
     notifyListeners();
   }

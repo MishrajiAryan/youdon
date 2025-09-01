@@ -3,22 +3,19 @@ File Name: main.dart
 File Code:
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/home_screen.dart'; // Correct path
+import 'package:google_fonts/google_fonts.dart';
+import 'screens/home_screen.dart';
 import 'theme_notifier.dart';
-import 'models/download_manager.dart'; // Import your DownloadManager
+import 'models/download_manager.dart';
 
 void main() {
   runApp(
-    MultiProvider( // Use MultiProvider
+    MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => ThemeNotifier(),
-        ),
-        ChangeNotifierProvider( // Add this for DownloadManager
-          create: (_) => DownloadManager(),
-        ),
+        ChangeNotifierProvider(create: (_) => ThemeNotifier()),
+        ChangeNotifierProvider(create: (_) => DownloadManager()),
       ],
-      child: const YouDonApp(), // const added
+      child: const YouDonApp(),
     ),
   );
 }
@@ -26,21 +23,182 @@ void main() {
 class YouDonApp extends StatelessWidget {
   const YouDonApp({super.key});
 
+  // Custom Light Theme
+  static final ThemeData _lightTheme = ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.light,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: const Color(0xFF6366F1), // Modern indigo
+      brightness: Brightness.light,
+    ),
+    textTheme: GoogleFonts.interTextTheme().copyWith(
+      displayLarge: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 32),
+      displayMedium: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 28),
+      headlineLarge: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 24),
+      headlineMedium: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 20),
+      titleLarge: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 18),
+      titleMedium: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 16),
+      bodyLarge: GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 16),
+      bodyMedium: GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 14),
+      labelLarge: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 14),
+    ),
+    cardTheme: CardTheme(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.white,
+      surfaceTintColor: Colors.transparent,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 16),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: const Color(0xFFF8FAFC),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+      ),
+      labelStyle: GoogleFonts.inter(
+        color: const Color(0xFF64748B),
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: false,
+      titleTextStyle: GoogleFonts.inter(
+        color: const Color(0xFF0F172A),
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+      ),
+      iconTheme: const IconThemeData(color: Color(0xFF475569)),
+    ),
+    tabBarTheme: TabBarTheme(
+      indicator: BoxDecoration(
+        color: const Color(0xFF6366F1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelColor: Colors.white,
+      unselectedLabelColor: const Color(0xFF64748B),
+      labelStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14),
+      unselectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 14),
+    ),
+  );
+
+  // Custom Dark Theme
+  static final ThemeData _darkTheme = ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: const Color(0xFF6366F1),
+      brightness: Brightness.dark,
+    ),
+    scaffoldBackgroundColor: const Color(0xFF0F172A),
+    textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
+      displayLarge: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 32, color: Colors.white),
+      displayMedium: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 28, color: Colors.white),
+      headlineLarge: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 24, color: Colors.white),
+      headlineMedium: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 20, color: Colors.white),
+      titleLarge: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 18, color: Colors.white),
+      titleMedium: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white),
+      bodyLarge: GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 16, color: const Color(0xFFE2E8F0)),
+      bodyMedium: GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 14, color: const Color(0xFFCBD5E1)),
+      labelLarge: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
+    ),
+    cardTheme: CardTheme(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: const Color(0xFF1E293B),
+      surfaceTintColor: Colors.transparent,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 16),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: const Color(0xFF1E293B),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF334155), width: 1),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF334155), width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+      ),
+      labelStyle: GoogleFonts.inter(
+        color: const Color(0xFF94A3B8),
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: const Color(0xFF0F172A),
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: false,
+      titleTextStyle: GoogleFonts.inter(
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+      ),
+      iconTheme: const IconThemeData(color: Color(0xFFE2E8F0)),
+    ),
+    tabBarTheme: TabBarTheme(
+      indicator: BoxDecoration(
+        color: const Color(0xFF6366F1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelColor: Colors.white,
+      unselectedLabelColor: const Color(0xFF94A3B8),
+      labelStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14),
+      unselectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 14),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeNotifier>(
       builder: (context, themeNotifier, child) {
         return MaterialApp(
           title: 'YouDon - YouTube Downloader',
-          theme: ThemeData.light(),
-          darkTheme: ThemeData.dark(),
+          theme: _lightTheme,
+          darkTheme: _darkTheme,
           themeMode: themeNotifier.themeMode,
-          home: const HomeScreen(), // const added
+          home: const HomeScreen(),
+          debugShowCheckedModeBanner: false,
         );
       },
     );
   }
 }
+
 ----------------------------------------
 File Location: lib\theme_notifier.dart
 File Name: theme_notifier.dart
@@ -86,6 +244,7 @@ File Location: lib\models\download_manager.dart
 File Name: download_manager.dart
 File Code:
 // lib/models/download_manager.dart
+
 import 'package:flutter/material.dart';
 import 'download_task.dart';
 import '../services/downloader.dart';
@@ -93,11 +252,24 @@ import '../utils/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+class DownloadManagerMessage {
+  final String text;
+  final Color color;
+  final IconData icon;
+
+  DownloadManagerMessage(this.text, {required this.color, required this.icon});
+}
+
 class DownloadManager extends ChangeNotifier {
   List<DownloadTask> downloadQueue = [];
   List<DownloadTask> completedTasks = [];
   String? downloadPath;
   bool _isDownloading = false;
+
+  // Track URLs being downloaded to prevent duplicates
+  Set<String> _activeDownloads = {};
+
+  DownloadManagerMessage? uiMessage;
 
   DownloadManager() {
     _loadPreferences();
@@ -114,8 +286,12 @@ class DownloadManager extends ChangeNotifier {
               .map((taskJson) => DownloadTask.fromJson(taskJson))
               .toList();
     } catch (e) {
-      debugPrint("Error loading completed tasks: $e");
       completedTasks = [];
+      _setMessage(
+        "Error loading completed tasks.",
+        color: Colors.red,
+        icon: Icons.error,
+      );
     }
   }
 
@@ -127,30 +303,112 @@ class DownloadManager extends ChangeNotifier {
     await prefs.setString('completedTasks', completedTasksJson);
   }
 
+  void _setMessage(String text, {required Color color, required IconData icon}) {
+    uiMessage = DownloadManagerMessage(text, color: color, icon: icon);
+    notifyListeners();
+  }
+
+  void clearMessage() {
+    uiMessage = null;
+  }
+
   Future<void> setDownloadPath() async {
     String? path = await pickDownloadFolder();
     if (path != null) {
       downloadPath = path;
-      _savePreferences();
+      await _savePreferences();
+      _setMessage(
+        "Download folder set.",
+        color: Colors.green,
+        icon: Icons.folder_open,
+      );
       notifyListeners();
+    } else {
+      _setMessage(
+        "Failed to set download folder.",
+        color: Colors.red,
+        icon: Icons.folder_off,
+      );
     }
   }
 
   void addToQueue(DownloadTask task) {
+    // Create unique identifier for this download
+    String taskId = "${task.url}_${task.format}_${task.mode}";
+    
+    // Check if already downloading or in queue
+    if (_activeDownloads.contains(taskId)) {
+      _setMessage(
+        "This download is already in progress.",
+        color: Colors.orange,
+        icon: Icons.warning,
+      );
+      return;
+    }
+
+    // Check if already in queue
+    bool alreadyInQueue = downloadQueue.any((existingTask) =>
+        existingTask.url == task.url &&
+        existingTask.format == task.format &&
+        existingTask.mode == task.mode);
+
+    if (alreadyInQueue) {
+      _setMessage(
+        "This download is already in the queue.",
+        color: Colors.orange,
+        icon: Icons.warning,
+      );
+      return;
+    }
+
+    // Check if already completed
+    bool alreadyCompleted = completedTasks.any((existingTask) =>
+        existingTask.url == task.url &&
+        existingTask.format == task.format &&
+        existingTask.mode == task.mode);
+
+    if (alreadyCompleted) {
+      _setMessage(
+        "This download was already completed.",
+        color: Colors.blue,
+        icon: Icons.check_circle,
+      );
+      return;
+    }
+
     downloadQueue.add(task);
+    _setMessage(
+      "Download added to queue.",
+      color: Colors.green,
+      icon: Icons.download,
+    );
     notifyListeners();
     _processNextDownload();
   }
 
   void _processNextDownload() {
     if (_isDownloading || downloadQueue.isEmpty) return;
-    _isDownloading = true;
+    
     DownloadTask task = downloadQueue.first;
+    String taskId = "${task.url}_${task.format}_${task.mode}";
+    
+    // Double-check if this download is already active
+    if (_activeDownloads.contains(taskId)) {
+      downloadQueue.removeAt(0);
+      _processNextDownload();
+      return;
+    }
+    
+    _isDownloading = true;
+    _activeDownloads.add(taskId);
     _startDownload(task);
   }
 
   void _startDownload(DownloadTask task) async {
+    String taskId = "${task.url}_${task.format}_${task.mode}";
+    
     task.isDownloading = true;
+    task.isProcessing = false;
     notifyListeners();
 
     try {
@@ -163,37 +421,37 @@ class DownloadManager extends ChangeNotifier {
           task.progress = progress;
           notifyListeners();
         },
-        // NEW: fetch file name from yt-dlp output
         onFileName: (fileName) {
           task.fileName = fileName;
           notifyListeners();
         },
+        onProcessing: () {
+          task.isProcessing = true;
+          notifyListeners();
+        },
         onComplete: () {
-          downloadComplete(task);
+          _downloadComplete(task, taskId);
         },
         onError: (errorMessage) {
-          task.isDownloading = false;
-          _isDownloading = false;
-          notifyListeners();
-          debugPrint("Download Error for: ${task.url}: $errorMessage");
-          _processNextDownload();
+          _downloadError(task, taskId, errorMessage);
         },
         createPlaylistFolder: true,
       );
     } catch (e) {
-      task.isDownloading = false;
-      _isDownloading = false;
-      notifyListeners();
-      debugPrint("Exception in _startDownload: $e");
-      _processNextDownload();
+      _downloadError(task, taskId, e.toString());
     }
   }
 
-  void downloadComplete(DownloadTask task) {
+  void _downloadComplete(DownloadTask task, String taskId) {
     task.isDownloading = false;
+    task.isProcessing = false;
     task.isCompleted = true;
     downloadQueue.remove(task);
 
+    // Remove from active downloads
+    _activeDownloads.remove(taskId);
+
+    // Add to completed tasks if not already there
     bool alreadyCompleted = completedTasks.any((existingTask) =>
         existingTask.url == task.url &&
         existingTask.format == task.format &&
@@ -205,6 +463,29 @@ class DownloadManager extends ChangeNotifier {
     }
 
     _isDownloading = false;
+    _setMessage(
+      "Download complete!",
+      color: Colors.green,
+      icon: Icons.check_circle,
+    );
+    notifyListeners();
+    _processNextDownload();
+  }
+
+  void _downloadError(DownloadTask task, String taskId, String errorMessage) {
+    task.isDownloading = false;
+    task.isProcessing = false;
+    downloadQueue.remove(task);
+    
+    // Remove from active downloads
+    _activeDownloads.remove(taskId);
+    
+    _isDownloading = false;
+    _setMessage(
+      "Download failed: $errorMessage",
+      color: Colors.red,
+      icon: Icons.error,
+    );
     notifyListeners();
     _processNextDownload();
   }
@@ -212,12 +493,41 @@ class DownloadManager extends ChangeNotifier {
   void removeCompletedTask(DownloadTask task) {
     completedTasks.remove(task);
     _savePreferences();
+    _setMessage(
+      "Task deleted.",
+      color: Colors.red,
+      icon: Icons.delete,
+    );
     notifyListeners();
   }
 
   void clearAllCompletedTasks() {
     completedTasks.clear();
     _savePreferences();
+    _setMessage(
+      "All completed tasks cleared.",
+      color: Colors.red,
+      icon: Icons.delete_sweep,
+    );
+    notifyListeners();
+  }
+
+  // Method to cancel a download if needed
+  void cancelDownload(DownloadTask task) {
+    String taskId = "${task.url}_${task.format}_${task.mode}";
+    downloadQueue.remove(task);
+    _activeDownloads.remove(taskId);
+    
+    if (task.isDownloading && _isDownloading) {
+      _isDownloading = false;
+      _processNextDownload();
+    }
+    
+    _setMessage(
+      "Download cancelled.",
+      color: Colors.orange,
+      icon: Icons.cancel,
+    );
     notifyListeners();
   }
 }
@@ -226,6 +536,8 @@ class DownloadManager extends ChangeNotifier {
 File Location: lib\models\download_task.dart
 File Name: download_task.dart
 File Code:
+// lib/models/download_task.dart
+
 class DownloadTask {
   String url;
   String format;
@@ -234,7 +546,8 @@ class DownloadTask {
   double progress;
   bool isCompleted;
   bool isDownloading;
-  String? fileName; // <-- Add this
+  bool isProcessing; // <-- NEW: Track processing state (FFmpeg, extraction, etc.)
+  String? fileName;
 
   DownloadTask({
     required this.url,
@@ -244,7 +557,8 @@ class DownloadTask {
     this.progress = 0.0,
     this.isCompleted = false,
     this.isDownloading = false,
-    this.fileName, // <-- Add this
+    this.isProcessing = false, // <-- NEW: default to false
+    this.fileName,
   });
 
   factory DownloadTask.fromJson(Map<String, dynamic> json) => DownloadTask(
@@ -255,7 +569,8 @@ class DownloadTask {
         progress: (json['progress'] as num).toDouble(),
         isCompleted: json['isCompleted'],
         isDownloading: json['isDownloading'],
-        fileName: json['fileName'], // <-- Add this
+        isProcessing: json['isProcessing'] ?? false, // <-- NEW: handle null for older data
+        fileName: json['fileName'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -266,7 +581,8 @@ class DownloadTask {
         'progress': progress,
         'isCompleted': isCompleted,
         'isDownloading': isDownloading,
-        'fileName': fileName, // <-- Add this
+        'isProcessing': isProcessing, // <-- NEW
+        'fileName': fileName,
       };
 }
 
@@ -276,10 +592,12 @@ File Name: home_screen.dart
 File Code:
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'components/download_input.dart';
 import 'components/ongoing_tasks.dart';
 import 'components/completed_tasks.dart';
 import '../theme_notifier.dart';
+import '../models/download_manager.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -289,73 +607,467 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late TabController _tabController;
+  late AnimationController _fadeController;
+  late AnimationController _slideController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+  
   bool _showDownloadInput = true;
+  int _currentTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    
     _tabController = TabController(length: 2, vsync: this);
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOutCubic,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -0.5),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOutBack,
+    ));
+
     _tabController.addListener(() {
-      if (mounted) {
+      if (mounted && _tabController.indexIsChanging) {
         setState(() {
+          _currentTabIndex = _tabController.index;
           _showDownloadInput = _tabController.index == 0;
         });
+        
+        if (_showDownloadInput) {
+          _fadeController.forward();
+        } else {
+          _fadeController.reverse();
+        }
       }
     });
+
+    // Start initial animations
+    _fadeController.forward();
+    _slideController.forward();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _fadeController.dispose();
+    _slideController.dispose();
+    super.dispose();
+  }
+
+  void _showEnhancedSnackBar(String message, {Color? color, IconData? icon}) {
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          backgroundColor: color ?? Theme.of(context).colorScheme.primary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 8,
+          content: Row(
+            children: [
+              if (icon != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: Colors.white, size: 20),
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: Text(
+                  message,
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          duration: const Duration(seconds: 4),
+        ),
+      );
+  }
+
+  Widget _buildEnhancedAppBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return SliverAppBar(
+      expandedHeight: 120,
+      floating: false,
+      pinned: true,
+      elevation: 0,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+      surfaceTintColor: Colors.transparent,
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+        title: AnimatedBuilder(
+          animation: _slideAnimation,
+          builder: (context, child) {
+            return SlideTransition(
+              position: _slideAnimation,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "YouDon",
+                    style: GoogleFonts.inter(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  Text(
+                    "YouTube Downloader",
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: isDark 
+                          ? const Color(0xFF94A3B8) 
+                          : const Color(0xFF64748B),
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        background: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark 
+                  ? [
+                      const Color(0xFF0F172A),
+                      const Color(0xFF1E293B).withOpacity(0.8),
+                    ]
+                  : [
+                      Colors.white,
+                      const Color(0xFFF8FAFC),
+                    ],
+            ),
+          ),
+        ),
+      ),
+      actions: [
+        Consumer<ThemeNotifier>(
+          builder: (context, themeNotifier, child) {
+            return Container(
+              margin: const EdgeInsets.only(right: 16),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                decoration: BoxDecoration(
+                  color: isDark 
+                      ? const Color(0xFF334155).withOpacity(0.6)
+                      : const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isDark 
+                        ? const Color(0xFF475569).withOpacity(0.3)
+                        : const Color(0xFFE2E8F0),
+                    width: 1,
+                  ),
+                ),
+                child: IconButton(
+                  icon: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    transitionBuilder: (child, animation) {
+                      return ScaleTransition(scale: animation, child: child);
+                    },
+                    child: Icon(
+                      themeNotifier.themeMode == ThemeMode.dark
+                          ? Icons.light_mode_rounded
+                          : Icons.dark_mode_rounded,
+                      key: ValueKey(themeNotifier.themeMode),
+                      color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF475569),
+                    ),
+                  ),
+                  onPressed: () {
+                    themeNotifier.toggleTheme();
+                    _showEnhancedSnackBar(
+                      themeNotifier.themeMode == ThemeMode.dark
+                          ? "Welcome to the dark side ✨"
+                          : "Light mode activated ☀️",
+                      color: themeNotifier.themeMode == ThemeMode.dark
+                          ? const Color(0xFF6366F1)
+                          : const Color(0xFFF59E0B),
+                      icon: themeNotifier.themeMode == ThemeMode.dark
+                          ? Icons.dark_mode_rounded
+                          : Icons.light_mode_rounded,
+                    );
+                  },
+                  tooltip: themeNotifier.themeMode == ThemeMode.dark
+                      ? "Switch to Light Mode"
+                      : "Switch to Dark Mode",
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEnhancedTabBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark 
+              ? const Color(0xFF334155).withOpacity(0.5)
+              : const Color(0xFFE2E8F0),
+          width: 1,
+        ),
+      ),
+      child: TabBar(
+        controller: _tabController,
+        indicator: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFF6366F1),
+              const Color(0xFF8B5CF6),
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF6366F1).withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelColor: Colors.white,
+        unselectedLabelColor: isDark 
+            ? const Color(0xFF94A3B8) 
+            : const Color(0xFF64748B),
+        labelStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
+        unselectedLabelStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+        ),
+        tabs: [
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.download_rounded,
+                    size: _currentTabIndex == 0 ? 20 : 18,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text('Active'),
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.check_circle_rounded,
+                    size: _currentTabIndex == 1 ? 20 : 18,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text('Completed'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEnhancedFooter() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          Container(
+            height: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 40),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0))
+                      .withOpacity(0.5),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Crafted with ",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: isDark 
+                      ? const Color(0xFF94A3B8) 
+                      : const Color(0xFF64748B),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 1000),
+                curve: Curves.easeInOut,
+                child: const Text(
+                  "❤️",
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+              Text(
+                " by ",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: isDark 
+                      ? const Color(0xFF94A3B8) 
+                      : const Color(0xFF64748B),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                "Aryan Mishra",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: const Color(0xFF6366F1),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Listen for DownloadManager messages
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+      if (downloadManager.uiMessage != null) {
+        final msg = downloadManager.uiMessage!;
+        _showEnhancedSnackBar(msg.text, color: msg.color, icon: msg.icon);
+        downloadManager.clearMessage();
+      }
+    });
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("YouDon - YouTube Downloader",
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        elevation: 5,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Provider.of<ThemeNotifier>(context).themeMode == ThemeMode.dark
-                  ? Icons.dark_mode
-                  : Icons.light_mode,
-            ),
-            onPressed: () {
-              final themeNotifier =
-                  Provider.of<ThemeNotifier>(context, listen: false);
-              themeNotifier.toggleTheme();
-            },
-          ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.blueAccent,
-          indicatorWeight: 3.0,
-          tabs: const [
-            Tab(icon: Icon(Icons.download), text: 'Ongoing'),
-            Tab(icon: Icon(Icons.check_circle), text: 'Completed'),
-          ],
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            _buildEnhancedAppBar(),
+          ];
+        },
+        body: Column(
           children: [
-            AnimatedOpacity(
-              opacity: _showDownloadInput ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: _showDownloadInput ? const DownloadInput() : const SizedBox(),
+            _buildEnhancedTabBar(),
+            
+            // Download Input with enhanced animations
+            AnimatedBuilder(
+              animation: _fadeAnimation,
+              builder: (context, child) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOutCubic,
+                  height: _showDownloadInput ? null : 0,
+                  child: Opacity(
+                    opacity: _fadeAnimation.value,
+                    child: _showDownloadInput 
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(0, -0.3),
+                                end: Offset.zero,
+                              ).animate(CurvedAnimation(
+                                parent: _fadeController,
+                                curve: Curves.easeOutBack,
+                              )),
+                              child: const DownloadInput(),
+                            ),
+                          )
+                        : const SizedBox(),
+                  ),
+                );
+              },
             ),
+            
             const SizedBox(height: 20),
+            
+            // Tab Content
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  OngoingTasks(),
-                  CompletedTasks(),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: const OngoingTasks(),
+                    ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: const CompletedTasks(),
+                    ),
+                  ],
+                ),
               ),
             ),
+            
+            _buildEnhancedFooter(),
           ],
         ),
       ),
@@ -367,10 +1079,16 @@ class _HomeScreenState extends State<HomeScreen>
 File Location: lib\screens\components\completed_tasks.dart
 File Name: completed_tasks.dart
 File Code:
-// completed_tasks.dart
+// lib/screens/components/completed_tasks.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/download_manager.dart';
+import 'package:open_file/open_file.dart';
+import 'dart:io';
+import 'package:path/path.dart' as path;
+import 'dart:math';
+import 'package:flutter/foundation.dart'; // for debugPrint and kDebugMode
 
 class CompletedTasks extends StatefulWidget {
   const CompletedTasks({super.key});
@@ -382,6 +1100,348 @@ class CompletedTasks extends StatefulWidget {
 class _CompletedTasksState extends State<CompletedTasks> {
   bool _recentFirst = true;
 
+  IconData _getFormatIcon(String format) {
+    switch (format) {
+      case 'mp3':
+        return Icons.audiotrack;
+      case 'mp4':
+        return Icons.videocam;
+      default:
+        return Icons.insert_drive_file;
+    }
+  }
+
+  Color _getFormatColor(String format, BuildContext context) {
+    switch (format) {
+      case 'mp3':
+        return Theme.of(context).colorScheme.secondary;
+      case 'mp4':
+        return Theme.of(context).colorScheme.primary;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  void _showSnackBar(BuildContext context, String message, {Color? color, IconData? icon}) {
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: color ?? Colors.blueGrey,
+          content: Row(
+            children: [
+              if (icon != null) ...[
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 12),
+              ],
+              Expanded(child: Text(message, style: const TextStyle(color: Colors.white))),
+            ],
+          ),
+        ),
+      );
+  }
+
+  // Enhanced similarity function for fuzzy matching
+  double _calculateSimilarity(String s1, String s2) {
+    if (s1 == s2) return 1.0;
+    if (s1.isEmpty || s2.isEmpty) return 0.0;
+
+    // Convert to lowercase for case-insensitive comparison
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+
+    // Levenshtein distance-based similarity
+    final len1 = s1.length;
+    final len2 = s2.length;
+    final maxLen = max(len1, len2);
+    if (maxLen == 0) return 1.0;
+
+    final distance = _levenshteinDistance(s1, s2);
+    return 1.0 - (distance / maxLen);
+  }
+
+  // Levenshtein distance calculation (fixed initialization to avoid invalid_assignment)
+  int _levenshteinDistance(String s1, String s2) {
+    final len1 = s1.length;
+    final len2 = s2.length;
+
+    // Explicit generic types avoid inference pitfalls
+    final List<List<int>> matrix = List<List<int>>.generate(
+      len1 + 1,
+      (_) => List<int>.filled(len2 + 1, 0, growable: false),
+      growable: false,
+    );
+
+    for (int i = 0; i <= len1; i++) {
+      matrix[i][0] = i;
+    }
+    for (int j = 0; j <= len2; j++) {
+      matrix[0][j] = j;
+    }
+
+    for (int i = 1; i <= len1; i++) {
+      for (int j = 1; j <= len2; j++) {
+        final cost = s1[i - 1] == s2[j - 1] ? 0 : 1;
+        matrix[i][j] = [
+          matrix[i - 1][j] + 1, // deletion
+          matrix[i][j - 1] + 1, // insertion
+          matrix[i - 1][j - 1] + cost // substitution
+        ].reduce(min);
+      }
+    }
+
+    return matrix[len1][len2];
+  }
+
+  // Method to sanitize and normalize filenames for better matching
+  String _sanitizeFileName(String fileName) {
+    String sanitized = fileName;
+
+    // Remove yt-dlp format codes like .f234, .F123, etc.
+    sanitized = sanitized.replaceAll(RegExp(r'\.[fF]\d+'), '');
+
+    // Normalize whitespace
+    sanitized = sanitized.replaceAll(RegExp(r'\s+'), ' ');
+
+    // Remove common special characters that might differ
+    sanitized = sanitized.replaceAll(RegExp(r'[""｜|•·\-_()\[\]]'), '');
+
+    // Remove common words that might be inconsistent
+    sanitized = sanitized.replaceAll(
+      RegExp(r'\b(full|song|with|lyrics|video|audio|official|hd|4k)\b', caseSensitive: false),
+      '',
+    );
+
+    // Clean up extra spaces
+    sanitized = sanitized.replaceAll(RegExp(r'\s+'), ' ');
+
+    return sanitized.trim();
+  }
+
+  // Enhanced fuzzy file finder (expanded extensions and debugPrint)
+  String? _findBestMatch(
+    String targetName,
+    List<FileSystemEntity> files,
+    String format, {
+    double threshold = 0.65,
+  }) {
+    final sanitizedTarget = _sanitizeFileName(targetName);
+    debugPrint("DEBUG: Looking for fuzzy match for: '$sanitizedTarget'");
+
+    // Broaden valid extensions to cover common outputs/conversions
+    final List<String> validExtensions = format == 'mp3'
+        ? <String>['.mp3', '.m4a', '.aac', '.opus', '.wav', '.flac']
+        : <String>['.mp4', '.mkv', '.webm', '.mov', '.avi'];
+
+    String? bestMatch;
+    double bestSimilarity = 0.0;
+
+    for (final file in files) {
+      if (file is File) {
+        final fileName = path.basename(file.path);
+        final fileExtension = path.extension(file.path).toLowerCase();
+
+        // Check if extension matches format
+        if (!validExtensions.contains(fileExtension)) continue;
+
+        final fileNameWithoutExt = path.basenameWithoutExtension(fileName);
+        final sanitizedFileName = _sanitizeFileName(fileNameWithoutExt);
+
+        // Calculate similarity
+        double similarity = _calculateSimilarity(sanitizedTarget, sanitizedFileName);
+
+        debugPrint("DEBUG: Comparing '$sanitizedTarget' with '$sanitizedFileName': similarity = $similarity");
+
+        // Also check if one string contains the other (for partial matches)
+        if (similarity < threshold) {
+          if (sanitizedTarget.contains(sanitizedFileName) || sanitizedFileName.contains(sanitizedTarget)) {
+            final containsSimilarity =
+                min(sanitizedTarget.length, sanitizedFileName.length) /
+                    max(sanitizedTarget.length, sanitizedFileName.length).toDouble();
+            if (containsSimilarity > 0.5) {
+              similarity = max(similarity, containsSimilarity);
+              debugPrint("DEBUG: Boosted similarity using substring match: $similarity");
+            }
+          }
+        }
+
+        if (similarity > bestSimilarity && similarity >= threshold) {
+          bestSimilarity = similarity;
+          bestMatch = file.path;
+          debugPrint("DEBUG: New best match: '$fileName' with similarity $similarity");
+        }
+      }
+    }
+
+    if (bestMatch != null) {
+      debugPrint("DEBUG: Best match found: '$bestMatch' with similarity $bestSimilarity");
+    } else {
+      debugPrint("DEBUG: No match found above threshold $threshold");
+    }
+
+    return bestMatch;
+  }
+
+  // Enhanced method to find and open file with fuzzy matching
+  Future<void> _openFile(String? storedFileName, String downloadPath, String format) async {
+    if (storedFileName == null || storedFileName.isEmpty) {
+      _showSnackBar(
+        context,
+        "File path not available.",
+        color: Colors.red,
+        icon: Icons.error,
+      );
+      return;
+    }
+
+    try {
+      String? actualFilePath;
+
+      debugPrint("DEBUG: Stored filename: $storedFileName");
+      debugPrint("DEBUG: Download path: $downloadPath");
+      debugPrint("DEBUG: Format: $format");
+
+      // First try the original path
+      final originalFile = File(storedFileName);
+      if (await originalFile.exists()) {
+        actualFilePath = storedFileName;
+        debugPrint("DEBUG: Found file at original path: $actualFilePath");
+      }
+
+      // If not found, try fuzzy matching in download directory (recursive for playlist folders)
+      if (actualFilePath == null) {
+        debugPrint("DEBUG: Starting fuzzy search in download directory (recursive)...");
+        final dir = Directory(downloadPath);
+        if (await dir.exists()) {
+          final files = await dir.list(recursive: true, followLinks: false).toList();
+          debugPrint("DEBUG: Files in directory (recursive): ${files.length}");
+
+          // Get the base name from stored filename for fuzzy matching
+          final targetName = path.basenameWithoutExtension(storedFileName);
+
+          // Try fuzzy matching with different thresholds
+          actualFilePath = _findBestMatch(targetName, files, format, threshold: 0.75) ??
+              _findBestMatch(targetName, files, format, threshold: 0.65) ??
+              _findBestMatch(targetName, files, format, threshold: 0.55);
+        }
+      }
+
+      if (actualFilePath == null) {
+        debugPrint("DEBUG: File not found anywhere");
+        if (!mounted) return;
+        _showSnackBar(
+          context,
+          "File not found in download location",
+          color: Colors.red,
+          icon: Icons.error,
+        );
+        return;
+      }
+
+      debugPrint("DEBUG: Attempting to open file: $actualFilePath");
+
+      // Try to open the file
+      final result = await OpenFile.open(actualFilePath);
+      if (!mounted) return;
+
+      debugPrint("DEBUG: OpenFile result: ${result.type}, message: ${result.message}");
+
+      final fallbackMessage = (result.message.isNotEmpty) ? result.message : 'Unknown error';
+
+      switch (result.type) {
+        case ResultType.done:
+          _showSnackBar(
+            context,
+            "File opened successfully.",
+            color: Colors.green,
+            icon: Icons.check_circle,
+          );
+          break;
+        case ResultType.fileNotFound:
+          _showSnackBar(
+            context,
+            "File not found by system",
+            color: Colors.red,
+            icon: Icons.error,
+          );
+          break;
+        case ResultType.noAppToOpen:
+          _showSnackBar(
+            context,
+            "No app found to open this file type.",
+            color: Colors.orange,
+            icon: Icons.warning,
+          );
+          break;
+        case ResultType.permissionDenied:
+          _showSnackBar(
+            context,
+            "Permission denied to open file.",
+            color: Colors.red,
+            icon: Icons.block,
+          );
+          break;
+        default:
+          _showSnackBar(
+            context,
+            "Could not open file: $fallbackMessage",
+            color: Colors.red,
+            icon: Icons.error,
+          );
+      }
+    } catch (e) {
+      debugPrint("DEBUG: Exception occurred: $e");
+      if (!mounted) return;
+      _showSnackBar(
+        context,
+        "Error opening file: ${e.toString()}",
+        color: Colors.red,
+        icon: Icons.error,
+      );
+    }
+  }
+
+  // Method to open folder location; prefers the file's containing folder if available
+  Future<void> _openFolder(String downloadPath, {String? targetFile}) async {
+    try {
+      String pathToOpen = downloadPath;
+      if (targetFile != null && targetFile.isNotEmpty) {
+        final parent = path.dirname(targetFile);
+        if (await Directory(parent).exists()) {
+          pathToOpen = parent;
+        }
+      }
+
+      final result = await OpenFile.open(pathToOpen);
+      if (!mounted) return;
+
+      if (result.type == ResultType.done) {
+        _showSnackBar(
+          context,
+          "Folder opened successfully.",
+          color: Colors.green,
+          icon: Icons.folder_open,
+        );
+      } else {
+        _showSnackBar(
+          context,
+          "Could not open folder.",
+          color: Colors.orange,
+          icon: Icons.warning,
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _showSnackBar(
+        context,
+        "Error opening folder: ${e.toString()}",
+        color: Colors.red,
+        icon: Icons.error,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DownloadManager>(
@@ -389,7 +1449,6 @@ class _CompletedTasksState extends State<CompletedTasks> {
         var completed = List.of(downloadManager.completedTasks);
         if (_recentFirst) {
           completed = completed.reversed.toList();
-
         }
 
         if (completed.isEmpty) {
@@ -412,6 +1471,12 @@ class _CompletedTasksState extends State<CompletedTasks> {
                   style: TextButton.styleFrom(foregroundColor: Colors.red),
                   onPressed: () {
                     downloadManager.clearAllCompletedTasks();
+                    _showSnackBar(
+                      context,
+                      "All completed tasks cleared.",
+                      color: Colors.red,
+                      icon: Icons.delete_sweep,
+                    );
                   },
                 ),
               ],
@@ -421,18 +1486,80 @@ class _CompletedTasksState extends State<CompletedTasks> {
                 itemCount: completed.length,
                 itemBuilder: (context, index) {
                   final task = completed[index];
-                  return ListTile(
-                    title: Text(
-                      task.fileName ?? task.url,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text('${task.format} - ${task.mode}'),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        downloadManager.removeCompletedTask(task);
-                      },
+
+                  // Use the actual stored filename and extension for display when available
+                  String displayName;
+                  if (task.fileName != null && task.fileName!.isNotEmpty) {
+                    final base = path.basename(task.fileName!);
+                    final baseNoExt = path.basenameWithoutExtension(base);
+                    final ext = path.extension(base);
+                    displayName = '${_sanitizeFileName(baseNoExt)}$ext';
+                  } else {
+                    displayName = task.url;
+                  }
+
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: Card(
+                      elevation: 5,
+                      shadowColor: Colors.black26,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _getFormatColor(task.format, context).withValues(alpha: 0.15),
+                          child: Icon(
+                            _getFormatIcon(task.format),
+                            color: _getFormatColor(task.format, context),
+                          ),
+                        ),
+                        title: Text(
+                          displayName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          '${task.format == "mp3" ? "Audio" : "Video"} • ${task.mode == "playlist" ? "Playlist" : "Single"}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Theme.of(context).textTheme.bodySmall?.color,
+                          ),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Open file button
+                            IconButton(
+                              icon: const Icon(Icons.play_arrow, color: Colors.blue),
+                              tooltip: "Open File",
+                              onPressed: () => _openFile(task.fileName, task.downloadPath, task.format),
+                            ),
+                            // Open folder button (opens containing folder if known)
+                            IconButton(
+                              icon: const Icon(Icons.folder_open, color: Colors.green),
+                              tooltip: "Open Folder",
+                              onPressed: () => _openFolder(task.downloadPath, targetFile: task.fileName),
+                            ),
+                            // Delete button
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              tooltip: "Delete from List",
+                              onPressed: () {
+                                downloadManager.removeCompletedTask(task);
+                                _showSnackBar(
+                                  context,
+                                  "Task deleted from list.",
+                                  color: Colors.red,
+                                  icon: Icons.delete,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        onTap: () => _openFile(task.fileName, task.downloadPath, task.format),
+                      ),
                     ),
                   );
                 },
@@ -449,6 +1576,8 @@ class _CompletedTasksState extends State<CompletedTasks> {
 File Location: lib\screens\components\download_input.dart
 File Name: download_input.dart
 File Code:
+// lib/screens/components/download_input.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/download_manager.dart';
@@ -467,13 +1596,85 @@ class _DownloadInputState extends State<DownloadInput> {
   String _selectedFormat = "mp4";
   String _selectedMode = "single";
 
+
+  void _showSnackBar(String message, {Color? color, IconData? icon}) {
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: color ?? Colors.blueGrey,
+          content: Row(
+            children: [
+              if (icon != null) ...[
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 10),
+              ],
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(color: Colors.white),
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+  }
+
+  void _addToQueue() {
+    final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+    final url = _urlController.text.trim();
+
+    if (url.isEmpty) {
+      _showSnackBar(
+        "Please enter a YouTube URL.",
+        color: Colors.red,
+        icon: Icons.error,
+      );
+      return;
+    }
+
+    if (downloadManager.downloadPath == null) {
+      _showSnackBar(
+        "Please select a download folder.",
+        color: Colors.red,
+        icon: Icons.folder_off,
+      );
+      return;
+    }
+
+    final newTask = DownloadTask(
+      url: url,
+      format: _selectedFormat,
+      mode: _selectedMode,
+      downloadPath: downloadManager.downloadPath!,
+    );
+
+    downloadManager.addToQueue(newTask);
+    _urlController.clear();
+    
+    _showSnackBar(
+      _selectedFormat == "mp3" 
+        ? "Audio download added with best quality format."
+        : "Video download added with best quality format.",
+      color: Colors.green,
+      icon: Icons.check_circle,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final downloadButtonColor = isDark ? Colors.pinkAccent : Theme.of(context).colorScheme.primary;
+
     return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 7,
+      shadowColor: Colors.black26,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
             // URL Input Field
@@ -482,32 +1683,124 @@ class _DownloadInputState extends State<DownloadInput> {
               decoration: InputDecoration(
                 labelText: "Enter YouTube URL",
                 prefixIcon: const Icon(Icons.link),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
 
-            // Format & Mode Selection
+            // Format & Mode Selection in a Row
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildDropdown(
-                  value: _selectedFormat,
-                  items: const ["mp4", "mp3"],
-                  onChanged: (value) => setState(() => _selectedFormat = value),
-                  icon: Icons.video_library,
-                  label: "Format",
+                // Format Dropdown (Video/Audio)
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedFormat,
+                    decoration: InputDecoration(
+                      labelText: "Quality",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                    ),
+                    isExpanded: true,
+                    onChanged: (value) => setState(() => _selectedFormat = value!),
+                    items: const [
+                      DropdownMenuItem(
+                        value: "mp4",
+                        child: Row(
+                          children: [
+                            Icon(Icons.high_quality, color: Colors.blue),
+                            SizedBox(width: 8),
+                            Text("Best Video + Audio"),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "mp3",
+                        child: Row(
+                          children: [
+                            Icon(Icons.audiotrack, color: Colors.deepPurple),
+                            SizedBox(width: 8),
+                            Text("Best Audio Only"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                _buildDropdown(
-                  value: _selectedMode,
-                  items: const ["single", "playlist"],
-                  onChanged: (value) => setState(() => _selectedMode = value),
-                  icon: Icons.playlist_play,
-                  label: "Mode",
+                const SizedBox(width: 16),
+
+                // Mode Dropdown (Single/Playlist)
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedMode,
+                    decoration: InputDecoration(
+                      labelText: "Mode",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                    ),
+                    isExpanded: true,
+                    onChanged: (value) => setState(() => _selectedMode = value!),
+                    items: const [
+                      DropdownMenuItem(
+                        value: "single",
+                        child: Row(
+                          children: [
+                            Icon(Icons.music_note, color: Colors.teal),
+                            SizedBox(width: 8),
+                            Text("Single"),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: "playlist",
+                        child: Row(
+                          children: [
+                            Icon(Icons.queue_music, color: Colors.orange),
+                            SizedBox(width: 8),
+                            Text("Playlist"),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
+
+            // Quality Info Card
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _selectedFormat == "mp3"
+                          ? "Audio: Highest bitrate format will be automatically selected"
+                          : "Video: Best resolution + audio combination will be automatically selected",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
 
             // Folder Selection
             Consumer<DownloadManager>(
@@ -516,77 +1809,48 @@ class _DownloadInputState extends State<DownloadInput> {
                   children: [
                     Expanded(
                       child: Text(
-                        downloadManager.downloadPath ?? "No download path selected",
+                        downloadManager.downloadPath ?? "Tap folder icon to select download path",
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey.shade700),
+                        style: TextStyle(
+                          color: downloadManager.downloadPath != null
+                              ? Theme.of(context).textTheme.bodyMedium?.color
+                              : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                     IconButton(
                       onPressed: () async {
-                        final path = await pickDownloadFolder();
-                        if (path != null) {
-                          downloadManager.setDownloadPath();
-                        }
+                        await downloadManager.setDownloadPath();
                       },
                       icon: const Icon(Icons.folder_open),
+                      tooltip: "Select Download Folder",
                     ),
                   ],
                 );
               },
             ),
-            const SizedBox(height: 10),
+
+            const SizedBox(height: 14),
 
             // Download Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 4,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  backgroundColor: downloadButtonColor,
+                  foregroundColor: Colors.white,
                 ),
                 icon: const Icon(Icons.download),
                 label: const Text("Add to Queue"),
-                onPressed: () {
-                  final downloadManager =
-                      Provider.of<DownloadManager>(context, listen: false);
-                  if (_urlController.text.isNotEmpty &&
-                      downloadManager.downloadPath != null) {
-                    final newTask = DownloadTask(
-                      url: _urlController.text,
-                      format: _selectedFormat,
-                      mode: _selectedMode,
-                      downloadPath: downloadManager.downloadPath!,
-                    );
-                    downloadManager.addToQueue(newTask);
-                    _urlController.clear();
-                  }
-                },
+                onPressed: _addToQueue,
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // Custom Dropdown Builder
-  Widget _buildDropdown({
-    required String value,
-    required List<String> items,
-    required void Function(String) onChanged,
-    required IconData icon,
-    required String label,
-  }) {
-    return Expanded(
-      child: DropdownButtonFormField<String>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-        onChanged: (newValue) => onChanged(newValue!),
-        items: items.map((item) => DropdownMenuItem(value: item, child: Text(item))).toList(),
       ),
     );
   }
@@ -597,18 +1861,40 @@ class _DownloadInputState extends State<DownloadInput> {
     super.dispose();
   }
 }
-
 ----------------------------------------
 File Location: lib\screens\components\ongoing_tasks.dart
 File Name: ongoing_tasks.dart
 File Code:
-// ongoing_tasks.dart
+// lib/screens/components/ongoing_tasks.dart
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Import Provider
-import '/models/download_manager.dart'; // Import your DownloadManager
+import 'package:provider/provider.dart';
+import '/models/download_manager.dart';
 
 class OngoingTasks extends StatelessWidget {
   const OngoingTasks({super.key});
+
+  IconData _getFormatIcon(String format) {
+    switch (format) {
+      case 'mp3':
+        return Icons.audiotrack;
+      case 'mp4':
+        return Icons.videocam;
+      default:
+        return Icons.insert_drive_file;
+    }
+  }
+
+  Color _getFormatColor(String format, BuildContext context) {
+    switch (format) {
+      case 'mp3':
+        return Theme.of(context).colorScheme.secondary;
+      case 'mp4':
+        return Theme.of(context).colorScheme.primary;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -622,25 +1908,91 @@ class OngoingTasks extends StatelessWidget {
           itemCount: downloadManager.downloadQueue.length,
           itemBuilder: (context, index) {
             final task = downloadManager.downloadQueue[index];
-            return ListTile(
-              title: Text(
-                task.fileName ?? task.url,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${task.format} - ${task.mode}'),
-                  if (task.isDownloading)
-                    LinearProgressIndicator(
-                      value: task.progress,
+
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeInOut,
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              child: Card(
+                elevation: 5,
+                shadowColor: Colors.black26,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: _getFormatColor(task.format, context).withOpacity(0.15),
+                    child: Icon(
+                      _getFormatIcon(task.format),
+                      color: _getFormatColor(task.format, context),
                     ),
-                ],
+                  ),
+                  title: Text(
+                    task.fileName ?? task.url,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${task.format == "mp3" ? "Audio" : "Video"} • ${task.mode == "playlist" ? "Playlist" : "Single"}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Theme.of(context).textTheme.bodySmall?.color,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 400),
+                        child: task.isDownloading
+                            ? Column(
+                                key: const ValueKey("progress"),
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  LinearProgressIndicator(
+                                    value: task.progress,
+                                    minHeight: 8, // Increased height for better visibility
+                                    backgroundColor: Theme.of(context).brightness == Brightness.dark
+                                        ? Colors.grey[800]
+                                        : Colors.grey[300],
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      task.format == "mp3"
+                                          ? Colors.deepPurpleAccent // Bright purple for audio
+                                          : Colors.blueAccent,     // Bright blue for video
+                                    ),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+
+
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "${(task.progress * 100).toStringAsFixed(1)}%",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(
+                                key: const ValueKey("queued"),
+                                padding: const EdgeInsets.symmetric(vertical: 6),
+                                child: Text(
+                                  "Queued",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                ),
+                              ),
+                      ),
+                    ],
+                  ),
+                  // Optionally, add a trailing cancel button or icon here
+                ),
               ),
-              trailing: task.isDownloading
-                  ? Text('${(task.progress * 100).toStringAsFixed(2)}%')
-                  : const Text("Queued"),
             );
           },
         );
@@ -653,12 +2005,21 @@ class OngoingTasks extends StatelessWidget {
 File Location: lib\services\downloader.dart
 File Name: downloader.dart
 File Code:
-// downloader.dart
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
+/// Download states for UI feedback
+enum DownloadStage {
+  preparing,
+  downloading,
+  processing,
+  completed,
+  error,
+}
+
+/// Starts a download using yt-dlp with optimized best format selection
 Future<void> startDownload({
   required String url,
   required String format,
@@ -668,54 +2029,68 @@ Future<void> startDownload({
   required Function(String) onError,
   required Function() onComplete,
   required bool createPlaylistFolder,
-  Function(String)? onFileName, // <-- NEW: optional callback
+  Function()? onProcessing,
+  Function(String)? onFileName,
 }) async {
   String ytDlpPath = "dependencies/yt-dlp.exe";
   String ffmpegPath = "dependencies/ffmpeg/bin/ffmpeg.exe";
 
   Map<String, String> envVars = {"FFMPEG_BINARY": ffmpegPath};
 
-  List<String> ytDlpArgs = [
-    "--ffmpeg-location",
-    ffmpegPath,
-    "--add-metadata",
-    "--embed-thumbnail",
-  ];
-
-  String outputPath = downloadPath;
-  String fileNameTemplate = "%(title)s.%(ext)s";
-
-  if (downloadMode == "playlist" && createPlaylistFolder) {
-    String playlistFolderName = "%(playlist_title)s";
-    outputPath = p.join(downloadPath, playlistFolderName);
-
-    try {
-      await Directory(outputPath).create(recursive: true);
-      debugPrint("Playlist folder created: $outputPath");
-    } catch (e) {
-      onError("Error creating playlist folder: $e");
-      return;
-    }
-  }
-
-  ytDlpArgs.addAll(["-o", p.join(outputPath, fileNameTemplate)]);
-
-  if (format == "mp4") {
-    ytDlpArgs.addAll(["-f", "bestvideo+bestaudio", "--merge-output-format", "mp4"]);
-  } else {
-    ytDlpArgs.addAll([
-      "-f", "bestaudio",
-      "--extract-audio",
-      "--audio-format", "mp3",
-      "--audio-quality", "0"
-    ]);
-  }
-
-  ytDlpArgs.add(downloadMode == "single" ? "--no-playlist" : "--yes-playlist");
-  ytDlpArgs.add(url);
-
   try {
-    debugPrint("Starting download...");
+    List<String> ytDlpArgs = [
+      "--ffmpeg-location",
+      ffmpegPath,
+      "--add-metadata",
+      "--embed-thumbnail",
+    ];
+
+    String outputPath = downloadPath;
+    String fileNameTemplate = "%(title)s.%(ext)s";
+
+    if (downloadMode == "playlist" && createPlaylistFolder) {
+      String playlistFolderName = "%(playlist_title)s";
+      outputPath = p.join(downloadPath, playlistFolderName);
+
+      try {
+        await Directory(outputPath).create(recursive: true);
+        debugPrint("Playlist folder created: $outputPath");
+      } catch (e) {
+        onError("Error creating playlist folder: $e");
+        return;
+      }
+    }
+
+    ytDlpArgs.addAll(["-o", p.join(outputPath, fileNameTemplate)]);
+
+    // Use yt-dlp's built-in best format selection (much faster)
+    if (format == "mp3") {
+      ytDlpArgs.addAll([
+        "-f", "bestaudio/best",
+        "--extract-audio",
+        "--audio-format", "mp3",
+        "--audio-quality", "0", // Best quality
+        "--embed-thumbnail",
+        "--add-metadata",
+      ]);
+    } else {
+      // For video: improved format selection for best quality
+      ytDlpArgs.addAll([
+        "-f", "bestvideo+bestaudio/best",
+        "--merge-output-format", "mp4",
+        "--embed-thumbnail",
+        "--add-metadata",
+      ]);
+    }
+
+
+    ytDlpArgs.add(downloadMode == "single" ? "--no-playlist" : "--yes-playlist");
+    ytDlpArgs.add(url);
+
+    bool isProcessing = false;
+    bool isDownloadFinished = false;
+
+    debugPrint("Starting download with optimized format selection");
     Process ytDlpProcess = await Process.start(
       ytDlpPath,
       ytDlpArgs,
@@ -725,30 +2100,48 @@ Future<void> startDownload({
     ytDlpProcess.stdout.transform(utf8.decoder).listen((data) {
       debugPrint("yt-dlp output: $data");
 
-      // NEW: Extract file name and call onFileName
-      final match = RegExp(r'\[download\] Destination: (.+)').firstMatch(data);
-      if (match != null && onFileName != null) {
-        onFileName(match.group(1)!);
+      // Detect file name
+      final fileMatch = RegExp(r'\[download\] Destination: (.+)').firstMatch(data);
+      if (fileMatch != null && onFileName != null) {
+        onFileName(fileMatch.group(1)!);
       }
 
-      double progress = _parseProgress(data);
-      onProgress(progress);
+      // Detect download progress
+      if (data.contains("[download]")) {
+        double progress = _parseProgress(data);
+        onProgress(progress);
+      }
+
+      // Detect start of processing (FFmpeg, extraction, merging, etc.)
+      if ((data.contains("[ffmpeg]") || 
+           data.contains("[ExtractAudio]") || 
+           data.contains("Merging formats into") ||
+           data.contains("Deleting original file")) && !isProcessing) {
+        isProcessing = true;
+        if (onProcessing != null) onProcessing();
+      }
+
+      // Detect download finished
+      if (data.contains("[download] 100%") || data.contains("[download] Finished downloading")) {
+        isDownloadFinished = true;
+        onProgress(1.0);
+      }
     }, onError: (error) {
       debugPrint("yt-dlp error: $error");
       onError(error.toString());
-    }, onDone: () {
-      debugPrint("yt-dlp finished");
-      onComplete();
     });
 
     ytDlpProcess.stderr.transform(utf8.decoder).listen((data) {
-      debugPrint("yt-dlp error: $data");
-      onError(data);
+      debugPrint("yt-dlp stderr: $data");
+      if (data.contains("ERROR") || data.contains("Error")) {
+        onError(data);
+      }
     });
 
     int exitCode = await ytDlpProcess.exitCode;
-    if (exitCode == 0 || exitCode == 1) {
-      debugPrint("Download complete");
+    if (exitCode == 0) {
+      debugPrint("Download and processing complete");
+      onProgress(1.0);
       onComplete();
     } else {
       debugPrint("Download failed with exit code $exitCode");
@@ -761,7 +2154,7 @@ Future<void> startDownload({
 }
 
 double _parseProgress(String output) {
-  RegExp regex = RegExp(r'\b(\d+\.\d+)%');
+  RegExp regex = RegExp(r'\[download\]\s+(\d+\.\d+)%');
   Match? match = regex.firstMatch(output);
   return match != null ? double.parse(match.group(1)!) / 100 : 0.0;
 }

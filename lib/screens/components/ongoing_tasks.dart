@@ -86,12 +86,19 @@ class OngoingTasks extends StatelessWidget {
                                 children: [
                                   LinearProgressIndicator(
                                     value: task.progress,
-                                    minHeight: 6,
-                                    backgroundColor: Colors.grey[300],
+                                    minHeight: 8, // Increased height for better visibility
+                                    backgroundColor: Theme.of(context).brightness == Brightness.dark
+                                        ? Colors.grey[800]
+                                        : Colors.grey[300],
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                      _getFormatColor(task.format, context),
+                                      task.format == "mp3"
+                                          ? Colors.deepPurpleAccent // Bright purple for audio
+                                          : Colors.blueAccent,     // Bright blue for video
                                     ),
+                                    borderRadius: BorderRadius.circular(4),
                                   ),
+
+
                                   const SizedBox(height: 4),
                                   Text(
                                     "${(task.progress * 100).toStringAsFixed(1)}%",

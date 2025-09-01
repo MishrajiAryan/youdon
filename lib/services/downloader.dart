@@ -1,5 +1,3 @@
-// lib/services/downloader.dart
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -14,13 +12,7 @@ enum DownloadStage {
   error,
 }
 
-/// Starts a download using yt-dlp and FFmpeg, tracking download and processing stages.
-/// 
-/// [onProgress] is called with a value from 0.0 to 1.0 during downloading.
-/// [onProcessing] is called when post-processing (FFmpeg, extraction) begins.
-/// [onFileName] is called with the output filename (if detected).
-/// [onComplete] is called only when all processing is finished.
-/// [onError] is called with an error message.
+/// Starts a download using yt-dlp with optimized best format selection
 Future<void> startDownload({
   required String url,
   required String format,
@@ -30,7 +22,7 @@ Future<void> startDownload({
   required Function(String) onError,
   required Function() onComplete,
   required bool createPlaylistFolder,
-  Function()? onProcessing, // <-- NEW: callback for processing state
+  Function()? onProcessing,
   Function(String)? onFileName,
 }) async {
   String ytDlpPath = "dependencies/yt-dlp.exe";
@@ -38,50 +30,60 @@ Future<void> startDownload({
 
   Map<String, String> envVars = {"FFMPEG_BINARY": ffmpegPath};
 
-  List<String> ytDlpArgs = [
-    "--ffmpeg-location",
-    ffmpegPath,
-    "--add-metadata",
-    "--embed-thumbnail",
-  ];
-
-  String outputPath = downloadPath;
-  String fileNameTemplate = "%(title)s.%(ext)s";
-
-  if (downloadMode == "playlist" && createPlaylistFolder) {
-    String playlistFolderName = "%(playlist_title)s";
-    outputPath = p.join(downloadPath, playlistFolderName);
-
-    try {
-      await Directory(outputPath).create(recursive: true);
-      debugPrint("Playlist folder created: $outputPath");
-    } catch (e) {
-      onError("Error creating playlist folder: $e");
-      return;
-    }
-  }
-
-  ytDlpArgs.addAll(["-o", p.join(outputPath, fileNameTemplate)]);
-
-  if (format == "mp4") {
-    ytDlpArgs.addAll(["-f", "bestvideo+bestaudio", "--merge-output-format", "mp4"]);
-  } else {
-    ytDlpArgs.addAll([
-      "-f", "bestaudio",
-      "--extract-audio",
-      "--audio-format", "mp3",
-      "--audio-quality", "0"
-    ]);
-  }
-
-  ytDlpArgs.add(downloadMode == "single" ? "--no-playlist" : "--yes-playlist");
-  ytDlpArgs.add(url);
-
-  bool isProcessing = false;
-  bool isDownloadFinished = false;
-
   try {
-    debugPrint("Starting download...");
+    List<String> ytDlpArgs = [
+      "--ffmpeg-location",
+      ffmpegPath,
+      "--add-metadata",
+      "--embed-thumbnail",
+    ];
+
+    String outputPath = downloadPath;
+    String fileNameTemplate = "%(title)s.%(ext)s";
+
+    if (downloadMode == "playlist" && createPlaylistFolder) {
+      String playlistFolderName = "%(playlist_title)s";
+      outputPath = p.join(downloadPath, playlistFolderName);
+
+      try {
+        await Directory(outputPath).create(recursive: true);
+        debugPrint("Playlist folder created: $outputPath");
+      } catch (e) {
+        onError("Error creating playlist folder: $e");
+        return;
+      }
+    }
+
+    ytDlpArgs.addAll(["-o", p.join(outputPath, fileNameTemplate)]);
+
+    // Use yt-dlp's built-in best format selection (much faster)
+    if (format == "mp3") {
+      ytDlpArgs.addAll([
+        "-f", "bestaudio/best",
+        "--extract-audio",
+        "--audio-format", "mp3",
+        "--audio-quality", "0", // Best quality
+        "--embed-thumbnail",
+        "--add-metadata",
+      ]);
+    } else {
+      // For video: improved format selection for best quality
+      ytDlpArgs.addAll([
+        "-f", "bestvideo+bestaudio/best",
+        "--merge-output-format", "mp4",
+        "--embed-thumbnail",
+        "--add-metadata",
+      ]);
+    }
+
+
+    ytDlpArgs.add(downloadMode == "single" ? "--no-playlist" : "--yes-playlist");
+    ytDlpArgs.add(url);
+
+    bool isProcessing = false;
+    bool isDownloadFinished = false;
+
+    debugPrint("Starting download with optimized format selection");
     Process ytDlpProcess = await Process.start(
       ytDlpPath,
       ytDlpArgs,
@@ -104,15 +106,17 @@ Future<void> startDownload({
       }
 
       // Detect start of processing (FFmpeg, extraction, merging, etc.)
-      if ((data.contains("[ffmpeg]") || data.contains("[ExtractAudio]") || data.contains("Merging formats into")) && !isProcessing) {
+      if ((data.contains("[ffmpeg]") || 
+           data.contains("[ExtractAudio]") || 
+           data.contains("Merging formats into") ||
+           data.contains("Deleting original file")) && !isProcessing) {
         isProcessing = true;
         if (onProcessing != null) onProcessing();
       }
 
-      // Detect download finished (but not necessarily processing)
+      // Detect download finished
       if (data.contains("[download] 100%") || data.contains("[download] Finished downloading")) {
         isDownloadFinished = true;
-        // Progress should be 1.0 at this point
         onProgress(1.0);
       }
     }, onError: (error) {
@@ -122,8 +126,9 @@ Future<void> startDownload({
 
     ytDlpProcess.stderr.transform(utf8.decoder).listen((data) {
       debugPrint("yt-dlp stderr: $data");
-      // Optionally, parse FFmpeg/yt-dlp errors here
-      // onError(data);
+      if (data.contains("ERROR") || data.contains("Error")) {
+        onError(data);
+      }
     });
 
     int exitCode = await ytDlpProcess.exitCode;
@@ -142,7 +147,6 @@ Future<void> startDownload({
 }
 
 double _parseProgress(String output) {
-  // Looks for lines like: [download]  45.3% of ...
   RegExp regex = RegExp(r'\[download\]\s+(\d+\.\d+)%');
   Match? match = regex.firstMatch(output);
   return match != null ? double.parse(match.group(1)!) / 100 : 0.0;

@@ -1,3 +1,5 @@
+// lib/screens/components/download_input.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/download_manager.dart';
@@ -15,6 +17,7 @@ class _DownloadInputState extends State<DownloadInput> {
   final TextEditingController _urlController = TextEditingController();
   String _selectedFormat = "mp4";
   String _selectedMode = "single";
+
 
   void _showSnackBar(String message, {Color? color, IconData? icon}) {
     ScaffoldMessenger.of(context)
@@ -40,6 +43,47 @@ class _DownloadInputState extends State<DownloadInput> {
           ),
         ),
       );
+  }
+
+  void _addToQueue() {
+    final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+    final url = _urlController.text.trim();
+
+    if (url.isEmpty) {
+      _showSnackBar(
+        "Please enter a YouTube URL.",
+        color: Colors.red,
+        icon: Icons.error,
+      );
+      return;
+    }
+
+    if (downloadManager.downloadPath == null) {
+      _showSnackBar(
+        "Please select a download folder.",
+        color: Colors.red,
+        icon: Icons.folder_off,
+      );
+      return;
+    }
+
+    final newTask = DownloadTask(
+      url: url,
+      format: _selectedFormat,
+      mode: _selectedMode,
+      downloadPath: downloadManager.downloadPath!,
+    );
+
+    downloadManager.addToQueue(newTask);
+    _urlController.clear();
+    
+    _showSnackBar(
+      _selectedFormat == "mp3" 
+        ? "Audio download added with best quality format."
+        : "Video download added with best quality format.",
+      color: Colors.green,
+      icon: Icons.check_circle,
+    );
   }
 
   @override
@@ -74,7 +118,7 @@ class _DownloadInputState extends State<DownloadInput> {
                   child: DropdownButtonFormField<String>(
                     value: _selectedFormat,
                     decoration: InputDecoration(
-                      labelText: "Format",
+                      labelText: "Quality",
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
                     ),
@@ -85,9 +129,9 @@ class _DownloadInputState extends State<DownloadInput> {
                         value: "mp4",
                         child: Row(
                           children: [
-                            Icon(Icons.videocam, color: Colors.blue),
+                            Icon(Icons.high_quality, color: Colors.blue),
                             SizedBox(width: 8),
-                            Text("Video"),
+                            Text("Best Video + Audio"),
                           ],
                         ),
                       ),
@@ -97,7 +141,7 @@ class _DownloadInputState extends State<DownloadInput> {
                           children: [
                             Icon(Icons.audiotrack, color: Colors.deepPurple),
                             SizedBox(width: 8),
-                            Text("Audio"),
+                            Text("Best Audio Only"),
                           ],
                         ),
                       ),
@@ -145,6 +189,41 @@ class _DownloadInputState extends State<DownloadInput> {
             ),
             const SizedBox(height: 14),
 
+            // Quality Info Card
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _selectedFormat == "mp3"
+                          ? "Audio: Highest bitrate format will be automatically selected"
+                          : "Video: Best resolution + audio combination will be automatically selected",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+
             // Folder Selection
             Consumer<DownloadManager>(
               builder: (context, downloadManager, child) {
@@ -152,26 +231,19 @@ class _DownloadInputState extends State<DownloadInput> {
                   children: [
                     Expanded(
                       child: Text(
-                        downloadManager.downloadPath ?? "No download path selected",
+                        downloadManager.downloadPath ?? "Tap folder icon to select download path",
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: downloadManager.downloadPath != null
-                              ? Colors.grey.shade700
-                              : Colors.red.shade300,
+                              ? Theme.of(context).textTheme.bodyMedium?.color
+                              : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                          fontSize: 14,
                         ),
                       ),
                     ),
                     IconButton(
                       onPressed: () async {
-                        final path = await pickDownloadFolder();
-                        if (path != null) {
-                          downloadManager.setDownloadPath();
-                          _showSnackBar(
-                            "Download folder set.",
-                            color: Colors.green,
-                            icon: Icons.folder_open,
-                          );
-                        }
+                        await downloadManager.setDownloadPath();
                       },
                       icon: const Icon(Icons.folder_open),
                       tooltip: "Select Download Folder",
@@ -180,6 +252,7 @@ class _DownloadInputState extends State<DownloadInput> {
                 );
               },
             ),
+
             const SizedBox(height: 14),
 
             // Download Button
@@ -195,41 +268,7 @@ class _DownloadInputState extends State<DownloadInput> {
                 ),
                 icon: const Icon(Icons.download),
                 label: const Text("Add to Queue"),
-                onPressed: () {
-                  final downloadManager =
-                      Provider.of<DownloadManager>(context, listen: false);
-                  final url = _urlController.text.trim();
-
-                  if (url.isEmpty) {
-                    _showSnackBar(
-                      "Please enter a YouTube URL.",
-                      color: Colors.red,
-                      icon: Icons.error,
-                    );
-                    return;
-                  }
-                  if (downloadManager.downloadPath == null) {
-                    _showSnackBar(
-                      "Please select a download folder.",
-                      color: Colors.red,
-                      icon: Icons.folder_off,
-                    );
-                    return;
-                  }
-                  final newTask = DownloadTask(
-                    url: url,
-                    format: _selectedFormat,
-                    mode: _selectedMode,
-                    downloadPath: downloadManager.downloadPath!,
-                  );
-                  downloadManager.addToQueue(newTask);
-                  _urlController.clear();
-                  _showSnackBar(
-                    "Download added to queue.",
-                    color: Colors.green,
-                    icon: Icons.check_circle,
-                  );
-                },
+                onPressed: _addToQueue,
               ),
             ),
           ],
