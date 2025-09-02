@@ -44,8 +44,8 @@ class DownloadManager extends ChangeNotifier {
       completedTasks = [];
       _setMessage(
         "Error loading completed tasks.",
-        color: Colors.red,
-        icon: Icons.error,
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
     }
   }
@@ -73,16 +73,16 @@ class DownloadManager extends ChangeNotifier {
       downloadPath = path;
       await _savePreferences();
       _setMessage(
-        "Download folder set.",
-        color: Colors.green,
-        icon: Icons.folder_open,
+        "📁 Download folder selected successfully!",
+        color: const Color(0xFF10B981),
+        icon: Icons.folder_open_rounded,
       );
       notifyListeners();
     } else {
       _setMessage(
-        "Failed to set download folder.",
-        color: Colors.red,
-        icon: Icons.folder_off,
+        "Failed to select download folder.",
+        color: const Color(0xFFEF4444),
+        icon: Icons.folder_off_rounded,
       );
     }
   }
@@ -94,9 +94,9 @@ class DownloadManager extends ChangeNotifier {
     // Check if already downloading or in queue
     if (_activeDownloads.contains(taskId)) {
       _setMessage(
-        "This download is already in progress.",
-        color: Colors.orange,
-        icon: Icons.warning,
+        "⚠️ This download is already in progress.",
+        color: const Color(0xFFF59E0B),
+        icon: Icons.warning_rounded,
       );
       return;
     }
@@ -109,34 +109,71 @@ class DownloadManager extends ChangeNotifier {
 
     if (alreadyInQueue) {
       _setMessage(
-        "This download is already in the queue.",
-        color: Colors.orange,
-        icon: Icons.warning,
+        "⚠️ This download is already in the queue.",
+        color: const Color(0xFFF59E0B),
+        icon: Icons.warning_rounded,
       );
       return;
     }
 
-    // Check if already completed
-    bool alreadyCompleted = completedTasks.any((existingTask) =>
-        existingTask.url == task.url &&
-        existingTask.format == task.format &&
-        existingTask.mode == task.mode);
-
-    if (alreadyCompleted) {
-      _setMessage(
-        "This download was already completed.",
-        color: Colors.blue,
-        icon: Icons.check_circle,
-      );
-      return;
-    }
+    // REMOVED: Check if already completed - users can now re-download completed tasks
 
     downloadQueue.add(task);
     _setMessage(
-      "Download added to queue.",
-      color: Colors.green,
-      icon: Icons.download,
+      "✅ Download added to queue successfully!",
+      color: const Color(0xFF10B981),
+      icon: Icons.download_rounded,
     );
+    notifyListeners();
+    _processNextDownload();
+  }
+
+  // NEW: Requeue functionality to move completed task back to active queue
+  void requeueTask(DownloadTask completedTask) {
+    // Create a new task based on the completed one (reset progress and status)
+    final newTask = DownloadTask(
+      url: completedTask.url,
+      format: completedTask.format,
+      mode: completedTask.mode,
+      downloadPath: completedTask.downloadPath,
+    );
+    
+    // Add to queue using existing addToQueue method (handles duplicates)
+    String taskId = "${newTask.url}_${newTask.format}_${newTask.mode}";
+    
+    // Check if already in active downloads or queue
+    if (_activeDownloads.contains(taskId)) {
+      _setMessage(
+        "⚠️ This download is already active.",
+        color: const Color(0xFFF59E0B),
+        icon: Icons.warning_rounded,
+      );
+      return;
+    }
+
+    bool alreadyInQueue = downloadQueue.any((existingTask) =>
+        existingTask.url == newTask.url &&
+        existingTask.format == newTask.format &&
+        existingTask.mode == newTask.mode);
+
+    if (alreadyInQueue) {
+      _setMessage(
+        "⚠️ This download is already in the active queue.",
+        color: const Color(0xFFF59E0B),
+        icon: Icons.warning_rounded,
+      );
+      return;
+    }
+
+    // Add to queue
+    downloadQueue.add(newTask);
+    
+    _setMessage(
+      "🔄 Download re-added to queue successfully!",
+      color: const Color(0xFF10B981),
+      icon: Icons.refresh_rounded,
+    );
+    
     notifyListeners();
     _processNextDownload();
   }
@@ -219,9 +256,9 @@ class DownloadManager extends ChangeNotifier {
 
     _isDownloading = false;
     _setMessage(
-      "Download complete!",
-      color: Colors.green,
-      icon: Icons.check_circle,
+      "🎉 Download completed successfully!",
+      color: const Color(0xFF10B981),
+      icon: Icons.check_circle_rounded,
     );
     notifyListeners();
     _processNextDownload();
@@ -237,9 +274,9 @@ class DownloadManager extends ChangeNotifier {
     
     _isDownloading = false;
     _setMessage(
-      "Download failed: $errorMessage",
-      color: Colors.red,
-      icon: Icons.error,
+      "❌ Download failed: $errorMessage",
+      color: const Color(0xFFEF4444),
+      icon: Icons.error_outline_rounded,
     );
     notifyListeners();
     _processNextDownload();
@@ -249,9 +286,9 @@ class DownloadManager extends ChangeNotifier {
     completedTasks.remove(task);
     _savePreferences();
     _setMessage(
-      "Task deleted.",
-      color: Colors.red,
-      icon: Icons.delete,
+      "🗑️ Task removed from completed list.",
+      color: const Color(0xFFEF4444),
+      icon: Icons.delete_rounded,
     );
     notifyListeners();
   }
@@ -260,9 +297,9 @@ class DownloadManager extends ChangeNotifier {
     completedTasks.clear();
     _savePreferences();
     _setMessage(
-      "All completed tasks cleared.",
-      color: Colors.red,
-      icon: Icons.delete_sweep,
+      "🧹 All completed tasks cleared successfully!",
+      color: const Color(0xFFEF4444),
+      icon: Icons.delete_sweep_rounded,
     );
     notifyListeners();
   }
@@ -279,10 +316,48 @@ class DownloadManager extends ChangeNotifier {
     }
     
     _setMessage(
-      "Download cancelled.",
-      color: Colors.orange,
-      icon: Icons.cancel,
+      "🚫 Download cancelled successfully.",
+      color: const Color(0xFFF59E0B),
+      icon: Icons.cancel_rounded,
     );
     notifyListeners();
+  }
+
+  // Helper method to get queue status
+  bool get isDownloadInProgress => _isDownloading;
+  
+  int get queueCount => downloadQueue.length;
+  
+  int get completedCount => completedTasks.length;
+  
+  // Helper method to check if a specific URL is already processed
+  bool isUrlAlreadyProcessed(String url, String format, String mode) {
+    String taskId = "${url}_${format}_${mode}";
+    
+    // Check if in active downloads
+    if (_activeDownloads.contains(taskId)) return true;
+    
+    // Check if in queue
+    if (downloadQueue.any((task) => 
+        task.url == url && task.format == format && task.mode == mode)) {
+      return true;
+    }
+    
+    // REMOVED: Check if in completed tasks - allow re-downloading completed tasks
+    
+    return false;
+  }
+  
+  // Helper method to get download statistics
+  Map<String, dynamic> getDownloadStats() {
+    return {
+      'totalCompleted': completedTasks.length,
+      'activeDownloads': downloadQueue.length,
+      'isDownloading': _isDownloading,
+      'audioDownloads': completedTasks.where((task) => task.format == 'mp3').length,
+      'videoDownloads': completedTasks.where((task) => task.format == 'mp4').length,
+      'playlistDownloads': completedTasks.where((task) => task.mode == 'playlist').length,
+      'singleDownloads': completedTasks.where((task) => task.mode == 'single').length,
+    };
   }
 }

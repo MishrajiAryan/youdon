@@ -23,162 +23,347 @@ void main() {
 class YouDonApp extends StatelessWidget {
   const YouDonApp({super.key});
 
-  // Custom Light Theme
+  // Enhanced Modern Light Theme
   static final ThemeData _lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF6366F1), // Modern indigo
+      seedColor: const Color(0xFF6366F1),
       brightness: Brightness.light,
+      primary: const Color(0xFF6366F1),
+      secondary: const Color(0xFF8B5CF6),
+      tertiary: const Color(0xFF06B6D4),
+      surface: const Color(0xFFFAFAFA),
+      surfaceContainerHighest: const Color(0xFFF1F5F9),
+      onSurface: const Color(0xFF0F172A),
+      outline: const Color(0xFFE2E8F0),
     ),
+    scaffoldBackgroundColor: const Color(0xFFFBFBFB),
     textTheme: GoogleFonts.interTextTheme().copyWith(
-      displayLarge: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 32),
-      displayMedium: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 28),
-      headlineLarge: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 24),
-      headlineMedium: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 20),
-      titleLarge: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 18),
-      titleMedium: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 16),
-      bodyLarge: GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 16),
-      bodyMedium: GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 14),
-      labelLarge: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 14),
+      displayLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w900,
+        fontSize: 36,
+        letterSpacing: -1.2,
+        color: const Color(0xFF0F172A),
+      ),
+      displayMedium: GoogleFonts.inter(
+        fontWeight: FontWeight.w800,
+        fontSize: 32,
+        letterSpacing: -1.0,
+        color: const Color(0xFF0F172A),
+      ),
+      headlineLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w700,
+        fontSize: 28,
+        letterSpacing: -0.8,
+        color: const Color(0xFF1E293B),
+      ),
+      headlineMedium: GoogleFonts.inter(
+        fontWeight: FontWeight.w600,
+        fontSize: 24,
+        letterSpacing: -0.6,
+        color: const Color(0xFF1E293B),
+      ),
+      titleLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w600,
+        fontSize: 20,
+        letterSpacing: -0.4,
+        color: const Color(0xFF334155),
+      ),
+      titleMedium: GoogleFonts.inter(
+        fontWeight: FontWeight.w500,
+        fontSize: 18,
+        letterSpacing: -0.2,
+        color: const Color(0xFF475569),
+      ),
+      bodyLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w400,
+        fontSize: 16,
+        letterSpacing: 0.1,
+        color: const Color(0xFF64748B),
+      ),
+      bodyMedium: GoogleFonts.inter(
+        fontWeight: FontWeight.w400,
+        fontSize: 14,
+        letterSpacing: 0.2,
+        color: const Color(0xFF64748B),
+      ),
+      labelLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+        letterSpacing: 0.5,
+        color: const Color(0xFF475569),
+      ),
     ),
     cardTheme: CardTheme(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shadowColor: Colors.black.withOpacity(0.05),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       color: Colors.white,
       surfaceTintColor: Colors.transparent,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 16),
+        shadowColor: Colors.transparent,
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          letterSpacing: 0.2,
+        ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: const Color(0xFFF8FAFC),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
       ),
       labelStyle: GoogleFonts.inter(
         color: const Color(0xFF64748B),
         fontWeight: FontWeight.w500,
+        fontSize: 16,
+      ),
+      hintStyle: GoogleFonts.inter(
+        color: const Color(0xFF94A3B8),
+        fontWeight: FontWeight.w400,
+        fontSize: 16,
       ),
     ),
     appBarTheme: AppBarTheme(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
+      scrolledUnderElevation: 0,
       centerTitle: false,
       titleTextStyle: GoogleFonts.inter(
         color: const Color(0xFF0F172A),
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.8,
       ),
-      iconTheme: const IconThemeData(color: Color(0xFF475569)),
+      iconTheme: const IconThemeData(
+        color: Color(0xFF475569),
+        size: 24,
+      ),
     ),
     tabBarTheme: TabBarTheme(
       indicator: BoxDecoration(
-        color: const Color(0xFF6366F1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF6366F1).withOpacity(0.25),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       indicatorSize: TabBarIndicatorSize.tab,
       labelColor: Colors.white,
       unselectedLabelColor: const Color(0xFF64748B),
-      labelStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14),
-      unselectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 14),
+      labelStyle: GoogleFonts.inter(
+        fontWeight: FontWeight.w600,
+        fontSize: 15,
+        letterSpacing: 0.2,
+      ),
+      unselectedLabelStyle: GoogleFonts.inter(
+        fontWeight: FontWeight.w500,
+        fontSize: 15,
+        letterSpacing: 0.2,
+      ),
     ),
   );
 
-  // Custom Dark Theme
+  // Enhanced Modern Dark Theme
   static final ThemeData _darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFF6366F1),
       brightness: Brightness.dark,
+      primary: const Color(0xFF6366F1),
+      secondary: const Color(0xFF8B5CF6),
+      tertiary: const Color(0xFF06B6D4),
+      surface: const Color(0xFF0F172A),
+      surfaceContainerHighest: const Color(0xFF1E293B),
+      onSurface: const Color(0xFFE2E8F0),
+      outline: const Color(0xFF334155),
     ),
-    scaffoldBackgroundColor: const Color(0xFF0F172A),
+    scaffoldBackgroundColor: const Color(0xFF020817),
     textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
-      displayLarge: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 32, color: Colors.white),
-      displayMedium: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 28, color: Colors.white),
-      headlineLarge: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 24, color: Colors.white),
-      headlineMedium: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 20, color: Colors.white),
-      titleLarge: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 18, color: Colors.white),
-      titleMedium: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white),
-      bodyLarge: GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 16, color: const Color(0xFFE2E8F0)),
-      bodyMedium: GoogleFonts.inter(fontWeight: FontWeight.w400, fontSize: 14, color: const Color(0xFFCBD5E1)),
-      labelLarge: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white),
+      displayLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w900,
+        fontSize: 36,
+        letterSpacing: -1.2,
+        color: const Color(0xFFF8FAFC),
+      ),
+      displayMedium: GoogleFonts.inter(
+        fontWeight: FontWeight.w800,
+        fontSize: 32,
+        letterSpacing: -1.0,
+        color: const Color(0xFFF8FAFC),
+      ),
+      headlineLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w700,
+        fontSize: 28,
+        letterSpacing: -0.8,
+        color: const Color(0xFFE2E8F0),
+      ),
+      headlineMedium: GoogleFonts.inter(
+        fontWeight: FontWeight.w600,
+        fontSize: 24,
+        letterSpacing: -0.6,
+        color: const Color(0xFFE2E8F0),
+      ),
+      titleLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w600,
+        fontSize: 20,
+        letterSpacing: -0.4,
+        color: const Color(0xFFCBD5E1),
+      ),
+      titleMedium: GoogleFonts.inter(
+        fontWeight: FontWeight.w500,
+        fontSize: 18,
+        letterSpacing: -0.2,
+        color: const Color(0xFFCBD5E1),
+      ),
+      bodyLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w400,
+        fontSize: 16,
+        letterSpacing: 0.1,
+        color: const Color(0xFF94A3B8),
+      ),
+      bodyMedium: GoogleFonts.inter(
+        fontWeight: FontWeight.w400,
+        fontSize: 14,
+        letterSpacing: 0.2,
+        color: const Color(0xFF94A3B8),
+      ),
+      labelLarge: GoogleFonts.inter(
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+        letterSpacing: 0.5,
+        color: const Color(0xFFCBD5E1),
+      ),
     ),
     cardTheme: CardTheme(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: const Color(0xFF1E293B),
+      shadowColor: Colors.black.withOpacity(0.2),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      color: const Color(0xFF0F172A),
       surfaceTintColor: Colors.transparent,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 16),
+        shadowColor: Colors.transparent,
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          letterSpacing: 0.2,
+        ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: const Color(0xFF1E293B),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF334155), width: 1),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFF334155), width: 1.5),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF334155), width: 1),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFF334155), width: 1.5),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFF6366F1), width: 2.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
       ),
       labelStyle: GoogleFonts.inter(
         color: const Color(0xFF94A3B8),
         fontWeight: FontWeight.w500,
+        fontSize: 16,
+      ),
+      hintStyle: GoogleFonts.inter(
+        color: const Color(0xFF64748B),
+        fontWeight: FontWeight.w400,
+        fontSize: 16,
       ),
     ),
     appBarTheme: AppBarTheme(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
+      scrolledUnderElevation: 0,
       centerTitle: false,
       titleTextStyle: GoogleFonts.inter(
-        color: Colors.white,
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
+        color: const Color(0xFFF8FAFC),
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.8,
       ),
-      iconTheme: const IconThemeData(color: Color(0xFFE2E8F0)),
+      iconTheme: const IconThemeData(
+        color: Color(0xFFE2E8F0),
+        size: 24,
+      ),
     ),
     tabBarTheme: TabBarTheme(
       indicator: BoxDecoration(
-        color: const Color(0xFF6366F1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF6366F1).withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       indicatorSize: TabBarIndicatorSize.tab,
       labelColor: Colors.white,
       unselectedLabelColor: const Color(0xFF94A3B8),
-      labelStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14),
-      unselectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 14),
+      labelStyle: GoogleFonts.inter(
+        fontWeight: FontWeight.w600,
+        fontSize: 15,
+        letterSpacing: 0.2,
+      ),
+      unselectedLabelStyle: GoogleFonts.inter(
+        fontWeight: FontWeight.w500,
+        fontSize: 15,
+        letterSpacing: 0.2,
+      ),
     ),
   );
 
@@ -187,7 +372,7 @@ class YouDonApp extends StatelessWidget {
     return Consumer<ThemeNotifier>(
       builder: (context, themeNotifier, child) {
         return MaterialApp(
-          title: 'YouDon - YouTube Downloader',
+          title: 'YouDon - Premium YouTube Downloader',
           theme: _lightTheme,
           darkTheme: _darkTheme,
           themeMode: themeNotifier.themeMode,
@@ -239,6 +424,7 @@ class ThemeNotifier with ChangeNotifier {
     await prefs.setInt('themeMode', _themeMode.index);
   }
 }
+
 ----------------------------------------
 File Location: lib\models\download_manager.dart
 File Name: download_manager.dart
@@ -289,8 +475,8 @@ class DownloadManager extends ChangeNotifier {
       completedTasks = [];
       _setMessage(
         "Error loading completed tasks.",
-        color: Colors.red,
-        icon: Icons.error,
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
     }
   }
@@ -318,16 +504,16 @@ class DownloadManager extends ChangeNotifier {
       downloadPath = path;
       await _savePreferences();
       _setMessage(
-        "Download folder set.",
-        color: Colors.green,
-        icon: Icons.folder_open,
+        "📁 Download folder selected successfully!",
+        color: const Color(0xFF10B981),
+        icon: Icons.folder_open_rounded,
       );
       notifyListeners();
     } else {
       _setMessage(
-        "Failed to set download folder.",
-        color: Colors.red,
-        icon: Icons.folder_off,
+        "Failed to select download folder.",
+        color: const Color(0xFFEF4444),
+        icon: Icons.folder_off_rounded,
       );
     }
   }
@@ -339,9 +525,9 @@ class DownloadManager extends ChangeNotifier {
     // Check if already downloading or in queue
     if (_activeDownloads.contains(taskId)) {
       _setMessage(
-        "This download is already in progress.",
-        color: Colors.orange,
-        icon: Icons.warning,
+        "⚠️ This download is already in progress.",
+        color: const Color(0xFFF59E0B),
+        icon: Icons.warning_rounded,
       );
       return;
     }
@@ -354,34 +540,71 @@ class DownloadManager extends ChangeNotifier {
 
     if (alreadyInQueue) {
       _setMessage(
-        "This download is already in the queue.",
-        color: Colors.orange,
-        icon: Icons.warning,
+        "⚠️ This download is already in the queue.",
+        color: const Color(0xFFF59E0B),
+        icon: Icons.warning_rounded,
       );
       return;
     }
 
-    // Check if already completed
-    bool alreadyCompleted = completedTasks.any((existingTask) =>
-        existingTask.url == task.url &&
-        existingTask.format == task.format &&
-        existingTask.mode == task.mode);
-
-    if (alreadyCompleted) {
-      _setMessage(
-        "This download was already completed.",
-        color: Colors.blue,
-        icon: Icons.check_circle,
-      );
-      return;
-    }
+    // REMOVED: Check if already completed - users can now re-download completed tasks
 
     downloadQueue.add(task);
     _setMessage(
-      "Download added to queue.",
-      color: Colors.green,
-      icon: Icons.download,
+      "✅ Download added to queue successfully!",
+      color: const Color(0xFF10B981),
+      icon: Icons.download_rounded,
     );
+    notifyListeners();
+    _processNextDownload();
+  }
+
+  // NEW: Requeue functionality to move completed task back to active queue
+  void requeueTask(DownloadTask completedTask) {
+    // Create a new task based on the completed one (reset progress and status)
+    final newTask = DownloadTask(
+      url: completedTask.url,
+      format: completedTask.format,
+      mode: completedTask.mode,
+      downloadPath: completedTask.downloadPath,
+    );
+    
+    // Add to queue using existing addToQueue method (handles duplicates)
+    String taskId = "${newTask.url}_${newTask.format}_${newTask.mode}";
+    
+    // Check if already in active downloads or queue
+    if (_activeDownloads.contains(taskId)) {
+      _setMessage(
+        "⚠️ This download is already active.",
+        color: const Color(0xFFF59E0B),
+        icon: Icons.warning_rounded,
+      );
+      return;
+    }
+
+    bool alreadyInQueue = downloadQueue.any((existingTask) =>
+        existingTask.url == newTask.url &&
+        existingTask.format == newTask.format &&
+        existingTask.mode == newTask.mode);
+
+    if (alreadyInQueue) {
+      _setMessage(
+        "⚠️ This download is already in the active queue.",
+        color: const Color(0xFFF59E0B),
+        icon: Icons.warning_rounded,
+      );
+      return;
+    }
+
+    // Add to queue
+    downloadQueue.add(newTask);
+    
+    _setMessage(
+      "🔄 Download re-added to queue successfully!",
+      color: const Color(0xFF10B981),
+      icon: Icons.refresh_rounded,
+    );
+    
     notifyListeners();
     _processNextDownload();
   }
@@ -464,9 +687,9 @@ class DownloadManager extends ChangeNotifier {
 
     _isDownloading = false;
     _setMessage(
-      "Download complete!",
-      color: Colors.green,
-      icon: Icons.check_circle,
+      "🎉 Download completed successfully!",
+      color: const Color(0xFF10B981),
+      icon: Icons.check_circle_rounded,
     );
     notifyListeners();
     _processNextDownload();
@@ -482,9 +705,9 @@ class DownloadManager extends ChangeNotifier {
     
     _isDownloading = false;
     _setMessage(
-      "Download failed: $errorMessage",
-      color: Colors.red,
-      icon: Icons.error,
+      "❌ Download failed: $errorMessage",
+      color: const Color(0xFFEF4444),
+      icon: Icons.error_outline_rounded,
     );
     notifyListeners();
     _processNextDownload();
@@ -494,9 +717,9 @@ class DownloadManager extends ChangeNotifier {
     completedTasks.remove(task);
     _savePreferences();
     _setMessage(
-      "Task deleted.",
-      color: Colors.red,
-      icon: Icons.delete,
+      "🗑️ Task removed from completed list.",
+      color: const Color(0xFFEF4444),
+      icon: Icons.delete_rounded,
     );
     notifyListeners();
   }
@@ -505,9 +728,9 @@ class DownloadManager extends ChangeNotifier {
     completedTasks.clear();
     _savePreferences();
     _setMessage(
-      "All completed tasks cleared.",
-      color: Colors.red,
-      icon: Icons.delete_sweep,
+      "🧹 All completed tasks cleared successfully!",
+      color: const Color(0xFFEF4444),
+      icon: Icons.delete_sweep_rounded,
     );
     notifyListeners();
   }
@@ -524,11 +747,49 @@ class DownloadManager extends ChangeNotifier {
     }
     
     _setMessage(
-      "Download cancelled.",
-      color: Colors.orange,
-      icon: Icons.cancel,
+      "🚫 Download cancelled successfully.",
+      color: const Color(0xFFF59E0B),
+      icon: Icons.cancel_rounded,
     );
     notifyListeners();
+  }
+
+  // Helper method to get queue status
+  bool get isDownloadInProgress => _isDownloading;
+  
+  int get queueCount => downloadQueue.length;
+  
+  int get completedCount => completedTasks.length;
+  
+  // Helper method to check if a specific URL is already processed
+  bool isUrlAlreadyProcessed(String url, String format, String mode) {
+    String taskId = "${url}_${format}_${mode}";
+    
+    // Check if in active downloads
+    if (_activeDownloads.contains(taskId)) return true;
+    
+    // Check if in queue
+    if (downloadQueue.any((task) => 
+        task.url == url && task.format == format && task.mode == mode)) {
+      return true;
+    }
+    
+    // REMOVED: Check if in completed tasks - allow re-downloading completed tasks
+    
+    return false;
+  }
+  
+  // Helper method to get download statistics
+  Map<String, dynamic> getDownloadStats() {
+    return {
+      'totalCompleted': completedTasks.length,
+      'activeDownloads': downloadQueue.length,
+      'isDownloading': _isDownloading,
+      'audioDownloads': completedTasks.where((task) => task.format == 'mp3').length,
+      'videoDownloads': completedTasks.where((task) => task.format == 'mp4').length,
+      'playlistDownloads': completedTasks.where((task) => task.mode == 'playlist').length,
+      'singleDownloads': completedTasks.where((task) => task.mode == 'single').length,
+    };
   }
 }
 
@@ -611,8 +872,10 @@ class _HomeScreenState extends State<HomeScreen>
   late TabController _tabController;
   late AnimationController _fadeController;
   late AnimationController _slideController;
+  late AnimationController _heroController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  late Animation<double> _heroAnimation;
   
   bool _showDownloadInput = true;
   int _currentTabIndex = 0;
@@ -623,11 +886,15 @@ class _HomeScreenState extends State<HomeScreen>
     
     _tabController = TabController(length: 2, vsync: this);
     _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 600),
       vsync: this,
     );
     _slideController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _heroController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
 
@@ -640,10 +907,18 @@ class _HomeScreenState extends State<HomeScreen>
     ));
 
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -0.5),
+      begin: const Offset(0, -0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _slideController,
+      curve: Curves.elasticOut,
+    ));
+
+    _heroAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _heroController,
       curve: Curves.easeOutBack,
     ));
 
@@ -656,15 +931,24 @@ class _HomeScreenState extends State<HomeScreen>
         
         if (_showDownloadInput) {
           _fadeController.forward();
+          _slideController.forward();
         } else {
           _fadeController.reverse();
+          _slideController.reverse();
         }
       }
     });
 
     // Start initial animations
-    _fadeController.forward();
-    _slideController.forward();
+    Future.delayed(const Duration(milliseconds: 200), () {
+      _heroController.forward();
+    });
+    Future.delayed(const Duration(milliseconds: 400), () {
+      _fadeController.forward();
+    });
+    Future.delayed(const Duration(milliseconds: 600), () {
+      _slideController.forward();
+    });
   }
 
   @override
@@ -672,7 +956,40 @@ class _HomeScreenState extends State<HomeScreen>
     _tabController.dispose();
     _fadeController.dispose();
     _slideController.dispose();
+    _heroController.dispose();
     super.dispose();
+  }
+
+  // Responsive breakpoints
+  bool _isSmallScreen(BuildContext context) {
+    return MediaQuery.of(context).size.width < 480;
+  }
+
+  bool _isMediumScreen(BuildContext context) {
+    return MediaQuery.of(context).size.width >= 480 && MediaQuery.of(context).size.width < 768;
+  }
+
+  bool _isLargeScreen(BuildContext context) {
+    return MediaQuery.of(context).size.width >= 768;
+  }
+
+  double _getResponsivePadding(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < 480) return width * 0.04; // 4% for small screens
+    if (width < 768) return width * 0.06; // 6% for medium screens
+    if (width < 1200) return width * 0.08; // 8% for large screens
+    return width * 0.10; // Reduced max padding
+  }
+
+  double _getResponsiveFontSize(BuildContext context, double baseSize) {
+    final shortestSide = MediaQuery.of(context).size.shortestSide;
+    
+    // Scale based on shortest side for better consistency across orientations
+    if (shortestSide < 360) return baseSize * 0.85; // Very small phones
+    if (shortestSide < 480) return baseSize * 0.9;  // Small phones
+    if (shortestSide < 600) return baseSize;        // Normal phones
+    if (shortestSide < 900) return baseSize * 1.1;  // Large phones/small tablets
+    return baseSize * 1.2; // Tablets and larger
   }
 
   void _showEnhancedSnackBar(String message, {Color? color, IconData? icon}) {
@@ -681,128 +998,213 @@ class _HomeScreenState extends State<HomeScreen>
       ..showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.all(16),
+          margin: EdgeInsets.all(_getResponsivePadding(context)),
           backgroundColor: color ?? Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          elevation: 8,
-          content: Row(
-            children: [
-              if (icon != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(_isSmallScreen(context) ? 12 : 16)
+          ),
+          elevation: 12,
+          content: Container(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                if (icon != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 18),
                   ),
-                  child: Icon(icon, color: Colors.white, size: 20),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    message,
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: _getResponsiveFontSize(context, 14),
+                      letterSpacing: 0.1,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 12),
               ],
-              Expanded(
-                child: Text(
-                  message,
-                  style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
           duration: const Duration(seconds: 4),
         ),
       );
   }
 
-  Widget _buildEnhancedAppBar() {
+  Widget _buildGradientBackground() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark 
+            ? [
+                const Color(0xFF020817),
+                const Color(0xFF0F172A),
+                const Color(0xFF1E293B).withOpacity(0.8),
+              ]
+            : [
+                const Color(0xFFFBFBFB),
+                const Color(0xFFF8FAFC),
+                const Color(0xFFF1F5F9).withOpacity(0.8),
+              ],
+          stops: const [0.0, 0.6, 1.0],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEnhancedAppBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenSize = MediaQuery.of(context).size;
+    final isSmall = _isSmallScreen(context);
+    final expandedHeight = isSmall ? 
+      (screenSize.height < 600 ? 80.0 : 100.0) : 
+      (_isMediumScreen(context) ? 120.0 : 140.0);
+    
     return SliverAppBar(
-      expandedHeight: 120,
+      expandedHeight: expandedHeight,
       floating: false,
       pinned: true,
       elevation: 0,
-      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+      // FIX: Add proper background color instead of transparent
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFFBFBFB),
       surfaceTintColor: Colors.transparent,
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+        titlePadding: EdgeInsets.only(
+          left: _getResponsivePadding(context),
+          bottom: isSmall ? 12 : 16,
+        ),
         title: AnimatedBuilder(
-          animation: _slideAnimation,
+          animation: _heroAnimation,
           builder: (context, child) {
-            return SlideTransition(
-              position: _slideAnimation,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "YouDon",
-                    style: GoogleFonts.inter(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? Colors.white : const Color(0xFF0F172A),
-                      letterSpacing: -0.5,
+            return Transform.scale(
+              scale: _heroAnimation.value,
+              child: Opacity(
+                opacity: _heroAnimation.value,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "YouDon",
+                      style: GoogleFonts.inter(
+                        fontSize: _getResponsiveFontSize(context, isSmall ? 20 : 24),
+                        fontWeight: FontWeight.w900,
+                        color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                        letterSpacing: -1.0,
+                        shadows: isDark ? [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.3),
+                            offset: const Offset(0, 2),
+                            blurRadius: 4,
+                          ),
+                        ] : null,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "YouTube Downloader",
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: isDark 
-                          ? const Color(0xFF94A3B8) 
-                          : const Color(0xFF64748B),
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                ],
+                    if (!isSmall || screenSize.height > 600)
+                      Text(
+                        "Premium YouTube Downloader",
+                        style: GoogleFonts.inter(
+                          fontSize: _getResponsiveFontSize(context, 10),
+                          fontWeight: FontWeight.w500,
+                          color: isDark 
+                              ? const Color(0xFF8B5CF6) 
+                              : const Color(0xFF6366F1),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             );
           },
         ),
-        background: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: isDark 
-                  ? [
-                      const Color(0xFF0F172A),
-                      const Color(0xFF1E293B).withOpacity(0.8),
-                    ]
-                  : [
-                      Colors.white,
-                      const Color(0xFFF8FAFC),
-                    ],
+        background: Stack(
+          children: [
+            _buildGradientBackground(),
+            Positioned(
+              top: -50,
+              right: -50,
+              child: AnimatedBuilder(
+                animation: _heroAnimation,
+                builder: (context, child) {
+                  final circleSize = isSmall ? 120.0 : (_isMediumScreen(context) ? 150.0 : 200.0);
+                  return Transform.scale(
+                    scale: _heroAnimation.value * 0.8,
+                    child: Container(
+                      width: circleSize,
+                      height: circleSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFF6366F1).withOpacity(0.1),
+                            const Color(0xFF8B5CF6).withOpacity(0.05),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
+          ],
         ),
       ),
       actions: [
         Consumer<ThemeNotifier>(
           builder: (context, themeNotifier, child) {
             return Container(
-              margin: const EdgeInsets.only(right: 16),
+              margin: EdgeInsets.only(right: _getResponsivePadding(context)),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 400),
                 decoration: BoxDecoration(
-                  color: isDark 
-                      ? const Color(0xFF334155).withOpacity(0.6)
-                      : const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(12),
+                  gradient: LinearGradient(
+                    colors: isDark 
+                        ? [
+                            const Color(0xFF334155).withOpacity(0.8),
+                            const Color(0xFF475569).withOpacity(0.6),
+                          ]
+                        : [
+                            const Color(0xFFF1F5F9),
+                            const Color(0xFFE2E8F0),
+                          ],
+                  ),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: isDark 
                         ? const Color(0xFF475569).withOpacity(0.3)
-                        : const Color(0xFFE2E8F0),
+                        : const Color(0xFFCBD5E1).withOpacity(0.5),
                     width: 1,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: IconButton(
+                  iconSize: isSmall ? 18 : 20,
                   icon: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
+                    duration: const Duration(milliseconds: 500),
                     transitionBuilder: (child, animation) {
-                      return ScaleTransition(scale: animation, child: child);
+                      return RotationTransition(
+                        turns: animation,
+                        child: ScaleTransition(scale: animation, child: child),
+                      );
                     },
                     child: Icon(
                       themeNotifier.themeMode == ThemeMode.dark
@@ -810,6 +1212,7 @@ class _HomeScreenState extends State<HomeScreen>
                           : Icons.dark_mode_rounded,
                       key: ValueKey(themeNotifier.themeMode),
                       color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF475569),
+                      size: isSmall ? 18 : 20,
                     ),
                   ),
                   onPressed: () {
@@ -840,148 +1243,182 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildEnhancedTabBar() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final horizontalPadding = _getResponsivePadding(context);
+    final isSmall = _isSmallScreen(context);
     
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDark 
-              ? const Color(0xFF334155).withOpacity(0.5)
-              : const Color(0xFFE2E8F0),
-          width: 1,
-        ),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFF6366F1),
-              const Color(0xFF8B5CF6),
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF6366F1).withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        indicatorSize: TabBarIndicatorSize.tab,
-        labelColor: Colors.white,
-        unselectedLabelColor: isDark 
-            ? const Color(0xFF94A3B8) 
-            : const Color(0xFF64748B),
-        labelStyle: GoogleFonts.inter(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
-        unselectedLabelStyle: GoogleFonts.inter(
-          fontWeight: FontWeight.w500,
-          fontSize: 14,
-        ),
-        tabs: [
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(
-                    Icons.download_rounded,
-                    size: _currentTabIndex == 0 ? 20 : 18,
-                  ),
+    return AnimatedBuilder(
+      animation: _fadeAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, 20 * (1 - _fadeAnimation.value)),
+          child: Opacity(
+            opacity: _fadeAnimation.value,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: isSmall ? 12 : 16),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(isSmall ? 12 : 14),
+                border: Border.all(
+                  color: isDark 
+                      ? const Color(0xFF334155).withOpacity(0.5)
+                      : const Color(0xFFE2E8F0).withOpacity(0.8),
+                  width: 1.5,
                 ),
-                const SizedBox(width: 8),
-                const Text('Active'),
-              ],
-            ),
-          ),
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(
-                    Icons.check_circle_rounded,
-                    size: _currentTabIndex == 1 ? 20 : 18,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
                   ),
+                ],
+              ),
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(isSmall ? 8 : 10),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF6366F1).withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                const Text('Completed'),
-              ],
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                labelColor: Colors.white,
+                unselectedLabelColor: isDark 
+                    ? const Color(0xFF94A3B8) 
+                    : const Color(0xFF64748B),
+                labelStyle: GoogleFonts.inter(
+                  fontWeight: FontWeight.w600,
+                  fontSize: _getResponsiveFontSize(context, 13),
+                  letterSpacing: 0.2,
+                ),
+                unselectedLabelStyle: GoogleFonts.inter(
+                  fontWeight: FontWeight.w500,
+                  fontSize: _getResponsiveFontSize(context, 13),
+                  letterSpacing: 0.2,
+                ),
+                tabs: [
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            Icons.download_rounded,
+                            size: _currentTabIndex == 0 ? 
+                              (isSmall ? 16 : 18) : 
+                              (isSmall ? 14 : 16),
+                          ),
+                        ),
+                        SizedBox(width: isSmall ? 4 : 6),
+                        const Flexible(child: Text('Active')),
+                      ],
+                    ),
+                  ),
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            Icons.check_circle_rounded,
+                            size: _currentTabIndex == 1 ? 
+                              (isSmall ? 16 : 18) : 
+                              (isSmall ? 14 : 16),
+                          ),
+                        ),
+                        SizedBox(width: isSmall ? 4 : 6),
+                        const Flexible(child: Text('Completed')),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildEnhancedFooter() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isSmall = _isSmallScreen(context);
     
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: EdgeInsets.symmetric(vertical: isSmall ? 16 : 24),
       child: Column(
         children: [
           Container(
             height: 1,
-            margin: const EdgeInsets.symmetric(horizontal: 40),
+            margin: EdgeInsets.symmetric(horizontal: _getResponsivePadding(context) * 2),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
                   (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0))
-                      .withOpacity(0.5),
+                      .withOpacity(0.6),
                   Colors.transparent,
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          SizedBox(height: isSmall ? 12 : 16),
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(
                 "Crafted with ",
                 style: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: _getResponsiveFontSize(context, 12),
                   color: isDark 
                       ? const Color(0xFF94A3B8) 
                       : const Color(0xFF64748B),
                   fontWeight: FontWeight.w400,
+                  letterSpacing: 0.2,
                 ),
               ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 1000),
-                curve: Curves.easeInOut,
-                child: const Text(
-                  "❤️",
-                  style: TextStyle(fontSize: 14),
-                ),
+              Text(
+                "❤️",
+                style: TextStyle(fontSize: _getResponsiveFontSize(context, 12)),
               ),
               Text(
                 " by ",
                 style: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: _getResponsiveFontSize(context, 12),
                   color: isDark 
                       ? const Color(0xFF94A3B8) 
                       : const Color(0xFF64748B),
                   fontWeight: FontWeight.w400,
+                  letterSpacing: 0.2,
                 ),
               ),
-              Text(
-                "Aryan Mishra",
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  color: const Color(0xFF6366F1),
-                  fontWeight: FontWeight.w600,
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                ).createShader(bounds),
+                child: Text(
+                  "Aryan Mishra",
+                  style: GoogleFonts.inter(
+                    fontSize: _getResponsiveFontSize(context, 12),
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.2,
+                  ),
                 ),
               ),
             ],
@@ -993,6 +1430,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final horizontalPadding = _getResponsivePadding(context);
+    
     // Listen for DownloadManager messages
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final downloadManager = Provider.of<DownloadManager>(context, listen: false);
@@ -1004,72 +1443,63 @@ class _HomeScreenState extends State<HomeScreen>
     });
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            _buildEnhancedAppBar(),
-          ];
-        },
-        body: Column(
-          children: [
-            _buildEnhancedTabBar(),
-            
-            // Download Input with enhanced animations
-            AnimatedBuilder(
-              animation: _fadeAnimation,
-              builder: (context, child) {
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  height: _showDownloadInput ? null : 0,
-                  child: Opacity(
-                    opacity: _fadeAnimation.value,
-                    child: _showDownloadInput 
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: SlideTransition(
-                              position: Tween<Offset>(
-                                begin: const Offset(0, -0.3),
-                                end: Offset.zero,
-                              ).animate(CurvedAnimation(
-                                parent: _fadeController,
-                                curve: Curves.easeOutBack,
-                              )),
-                              child: const DownloadInput(),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ),
-                );
-              },
-            ),
-            
-            const SizedBox(height: 20),
-            
-            // Tab Content
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: const OngoingTasks(),
-                    ),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: const CompletedTasks(),
-                    ),
-                  ],
+      body: Stack(
+        children: [
+          _buildGradientBackground(),
+          // FIX: Replace NestedScrollView with CustomScrollView for better layout handling
+          CustomScrollView(
+            slivers: [
+              _buildEnhancedAppBar(),
+              SliverToBoxAdapter(
+                child: _buildEnhancedTabBar(),
+              ),
+              SliverToBoxAdapter(
+                child: AnimatedBuilder(
+                  animation: _fadeAnimation,
+                  builder: (context, child) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.easeInOutCubic,
+                      height: _showDownloadInput ? null : 0,
+                      child: Opacity(
+                        opacity: _fadeAnimation.value,
+                        child: _showDownloadInput
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                                child: SlideTransition(
+                                  position: _slideAnimation,
+                                  child: const DownloadInput(),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ),
+                    );
+                  },
                 ),
               ),
-            ),
-            
-            _buildEnhancedFooter(),
-          ],
-        ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: _isSmallScreen(context) ? 12 : 16),
+              ),
+              // FIX: Use SliverToBoxAdapter with fixed height for TabBarView
+              SliverToBoxAdapter(
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.6, // Fixed height to prevent overflow
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: const [
+                      OngoingTasks(),
+                      CompletedTasks(),
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: _buildEnhancedFooter(),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -1083,12 +1513,13 @@ File Code:
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '/models/download_manager.dart';
 import 'package:open_file/open_file.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'dart:math';
-import 'package:flutter/foundation.dart'; // for debugPrint and kDebugMode
+import 'package:flutter/foundation.dart';
 
 class CompletedTasks extends StatefulWidget {
   const CompletedTasks({super.key});
@@ -1097,28 +1528,46 @@ class CompletedTasks extends StatefulWidget {
   State<CompletedTasks> createState() => _CompletedTasksState();
 }
 
-class _CompletedTasksState extends State<CompletedTasks> {
+class _CompletedTasksState extends State<CompletedTasks>
+    with TickerProviderStateMixin {
   bool _recentFirst = true;
+  late AnimationController _listAnimationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _listAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _listAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _listAnimationController.dispose();
+    super.dispose();
+  }
 
   IconData _getFormatIcon(String format) {
     switch (format) {
       case 'mp3':
-        return Icons.audiotrack;
+        return Icons.audiotrack_rounded;
       case 'mp4':
-        return Icons.videocam;
+        return Icons.videocam_rounded;
       default:
-        return Icons.insert_drive_file;
+        return Icons.insert_drive_file_rounded;
     }
   }
 
   Color _getFormatColor(String format, BuildContext context) {
     switch (format) {
       case 'mp3':
-        return Theme.of(context).colorScheme.secondary;
+        return const Color(0xFF8B5CF6);
       case 'mp4':
-        return Theme.of(context).colorScheme.primary;
+        return const Color(0xFF3B82F6);
       default:
-        return Colors.grey;
+        return const Color(0xFF64748B);
     }
   }
 
@@ -1128,16 +1577,42 @@ class _CompletedTasksState extends State<CompletedTasks> {
       ..showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          backgroundColor: color ?? Colors.blueGrey,
-          content: Row(
-            children: [
-              if (icon != null) ...[
-                Icon(icon, color: Colors.white),
-                const SizedBox(width: 12),
-              ],
-              Expanded(child: Text(message, style: const TextStyle(color: Colors.white))),
-            ],
+          margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+            vertical: 16,
           ),
+          backgroundColor: color ?? const Color(0xFF6366F1),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 12,
+          content: Container(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                if (icon != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 18),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    message,
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          duration: const Duration(seconds: 4),
         ),
       );
   }
@@ -1147,11 +1622,9 @@ class _CompletedTasksState extends State<CompletedTasks> {
     if (s1 == s2) return 1.0;
     if (s1.isEmpty || s2.isEmpty) return 0.0;
 
-    // Convert to lowercase for case-insensitive comparison
     s1 = s1.toLowerCase();
     s2 = s2.toLowerCase();
 
-    // Levenshtein distance-based similarity
     final len1 = s1.length;
     final len2 = s2.length;
     final maxLen = max(len1, len2);
@@ -1161,12 +1634,10 @@ class _CompletedTasksState extends State<CompletedTasks> {
     return 1.0 - (distance / maxLen);
   }
 
-  // Levenshtein distance calculation (fixed initialization to avoid invalid_assignment)
   int _levenshteinDistance(String s1, String s2) {
     final len1 = s1.length;
     final len2 = s2.length;
 
-    // Explicit generic types avoid inference pitfalls
     final List<List<int>> matrix = List<List<int>>.generate(
       len1 + 1,
       (_) => List<int>.filled(len2 + 1, 0, growable: false),
@@ -1184,9 +1655,9 @@ class _CompletedTasksState extends State<CompletedTasks> {
       for (int j = 1; j <= len2; j++) {
         final cost = s1[i - 1] == s2[j - 1] ? 0 : 1;
         matrix[i][j] = [
-          matrix[i - 1][j] + 1, // deletion
-          matrix[i][j - 1] + 1, // insertion
-          matrix[i - 1][j - 1] + cost // substitution
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
         ].reduce(min);
       }
     }
@@ -1194,32 +1665,19 @@ class _CompletedTasksState extends State<CompletedTasks> {
     return matrix[len1][len2];
   }
 
-  // Method to sanitize and normalize filenames for better matching
   String _sanitizeFileName(String fileName) {
     String sanitized = fileName;
-
-    // Remove yt-dlp format codes like .f234, .F123, etc.
     sanitized = sanitized.replaceAll(RegExp(r'\.[fF]\d+'), '');
-
-    // Normalize whitespace
     sanitized = sanitized.replaceAll(RegExp(r'\s+'), ' ');
-
-    // Remove common special characters that might differ
     sanitized = sanitized.replaceAll(RegExp(r'[""｜|•·\-_()\[\]]'), '');
-
-    // Remove common words that might be inconsistent
     sanitized = sanitized.replaceAll(
       RegExp(r'\b(full|song|with|lyrics|video|audio|official|hd|4k)\b', caseSensitive: false),
       '',
     );
-
-    // Clean up extra spaces
     sanitized = sanitized.replaceAll(RegExp(r'\s+'), ' ');
-
     return sanitized.trim();
   }
 
-  // Enhanced fuzzy file finder (expanded extensions and debugPrint)
   String? _findBestMatch(
     String targetName,
     List<FileSystemEntity> files,
@@ -1229,10 +1687,9 @@ class _CompletedTasksState extends State<CompletedTasks> {
     final sanitizedTarget = _sanitizeFileName(targetName);
     debugPrint("DEBUG: Looking for fuzzy match for: '$sanitizedTarget'");
 
-    // Broaden valid extensions to cover common outputs/conversions
     final List<String> validExtensions = format == 'mp3'
-        ? <String>['.mp3', '.m4a', '.aac', '.opus', '.wav', '.flac']
-        : <String>['.mp4', '.mkv', '.webm', '.mov', '.avi'];
+        ? ['.mp3', '.m4a', '.aac', '.opus', '.wav', '.flac']
+        : ['.mp4', '.mkv', '.webm', '.mov', '.avi'];
 
     String? bestMatch;
     double bestSimilarity = 0.0;
@@ -1242,18 +1699,13 @@ class _CompletedTasksState extends State<CompletedTasks> {
         final fileName = path.basename(file.path);
         final fileExtension = path.extension(file.path).toLowerCase();
 
-        // Check if extension matches format
         if (!validExtensions.contains(fileExtension)) continue;
 
         final fileNameWithoutExt = path.basenameWithoutExtension(fileName);
         final sanitizedFileName = _sanitizeFileName(fileNameWithoutExt);
 
-        // Calculate similarity
         double similarity = _calculateSimilarity(sanitizedTarget, sanitizedFileName);
 
-        debugPrint("DEBUG: Comparing '$sanitizedTarget' with '$sanitizedFileName': similarity = $similarity");
-
-        // Also check if one string contains the other (for partial matches)
         if (similarity < threshold) {
           if (sanitizedTarget.contains(sanitizedFileName) || sanitizedFileName.contains(sanitizedTarget)) {
             final containsSimilarity =
@@ -1261,7 +1713,6 @@ class _CompletedTasksState extends State<CompletedTasks> {
                     max(sanitizedTarget.length, sanitizedFileName.length).toDouble();
             if (containsSimilarity > 0.5) {
               similarity = max(similarity, containsSimilarity);
-              debugPrint("DEBUG: Boosted similarity using substring match: $similarity");
             }
           }
         }
@@ -1269,28 +1720,20 @@ class _CompletedTasksState extends State<CompletedTasks> {
         if (similarity > bestSimilarity && similarity >= threshold) {
           bestSimilarity = similarity;
           bestMatch = file.path;
-          debugPrint("DEBUG: New best match: '$fileName' with similarity $similarity");
         }
       }
-    }
-
-    if (bestMatch != null) {
-      debugPrint("DEBUG: Best match found: '$bestMatch' with similarity $bestSimilarity");
-    } else {
-      debugPrint("DEBUG: No match found above threshold $threshold");
     }
 
     return bestMatch;
   }
 
-  // Enhanced method to find and open file with fuzzy matching
   Future<void> _openFile(String? storedFileName, String downloadPath, String format) async {
     if (storedFileName == null || storedFileName.isEmpty) {
       _showSnackBar(
         context,
         "File path not available.",
-        color: Colors.red,
-        icon: Icons.error,
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
       return;
     }
@@ -1298,29 +1741,17 @@ class _CompletedTasksState extends State<CompletedTasks> {
     try {
       String? actualFilePath;
 
-      debugPrint("DEBUG: Stored filename: $storedFileName");
-      debugPrint("DEBUG: Download path: $downloadPath");
-      debugPrint("DEBUG: Format: $format");
-
-      // First try the original path
       final originalFile = File(storedFileName);
       if (await originalFile.exists()) {
         actualFilePath = storedFileName;
-        debugPrint("DEBUG: Found file at original path: $actualFilePath");
       }
 
-      // If not found, try fuzzy matching in download directory (recursive for playlist folders)
       if (actualFilePath == null) {
-        debugPrint("DEBUG: Starting fuzzy search in download directory (recursive)...");
         final dir = Directory(downloadPath);
         if (await dir.exists()) {
           final files = await dir.list(recursive: true, followLinks: false).toList();
-          debugPrint("DEBUG: Files in directory (recursive): ${files.length}");
-
-          // Get the base name from stored filename for fuzzy matching
           final targetName = path.basenameWithoutExtension(storedFileName);
-
-          // Try fuzzy matching with different thresholds
+          
           actualFilePath = _findBestMatch(targetName, files, format, threshold: 0.75) ??
               _findBestMatch(targetName, files, format, threshold: 0.65) ??
               _findBestMatch(targetName, files, format, threshold: 0.55);
@@ -1328,81 +1759,71 @@ class _CompletedTasksState extends State<CompletedTasks> {
       }
 
       if (actualFilePath == null) {
-        debugPrint("DEBUG: File not found anywhere");
         if (!mounted) return;
         _showSnackBar(
           context,
           "File not found in download location",
-          color: Colors.red,
-          icon: Icons.error,
+          color: const Color(0xFFEF4444),
+          icon: Icons.error_outline_rounded,
         );
         return;
       }
 
-      debugPrint("DEBUG: Attempting to open file: $actualFilePath");
-
-      // Try to open the file
       final result = await OpenFile.open(actualFilePath);
       if (!mounted) return;
-
-      debugPrint("DEBUG: OpenFile result: ${result.type}, message: ${result.message}");
-
-      final fallbackMessage = (result.message.isNotEmpty) ? result.message : 'Unknown error';
 
       switch (result.type) {
         case ResultType.done:
           _showSnackBar(
             context,
-            "File opened successfully.",
-            color: Colors.green,
-            icon: Icons.check_circle,
+            "File opened successfully! 🎉",
+            color: const Color(0xFF10B981),
+            icon: Icons.check_circle_rounded,
           );
           break;
         case ResultType.fileNotFound:
           _showSnackBar(
             context,
             "File not found by system",
-            color: Colors.red,
-            icon: Icons.error,
+            color: const Color(0xFFEF4444),
+            icon: Icons.error_outline_rounded,
           );
           break;
         case ResultType.noAppToOpen:
           _showSnackBar(
             context,
             "No app found to open this file type.",
-            color: Colors.orange,
-            icon: Icons.warning,
+            color: const Color(0xFFF59E0B),
+            icon: Icons.warning_rounded,
           );
           break;
         case ResultType.permissionDenied:
           _showSnackBar(
             context,
             "Permission denied to open file.",
-            color: Colors.red,
-            icon: Icons.block,
+            color: const Color(0xFFEF4444),
+            icon: Icons.block_rounded,
           );
           break;
         default:
           _showSnackBar(
             context,
-            "Could not open file: $fallbackMessage",
-            color: Colors.red,
-            icon: Icons.error,
+            "Could not open file: ${result.message}",
+            color: const Color(0xFFEF4444),
+            icon: Icons.error_outline_rounded,
           );
       }
     } catch (e) {
-      debugPrint("DEBUG: Exception occurred: $e");
       if (!mounted) return;
       _showSnackBar(
         context,
         "Error opening file: ${e.toString()}",
-        color: Colors.red,
-        icon: Icons.error,
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
     }
   }
 
-  // Method to open folder location; prefers the file's containing folder if available
   Future<void> _openFolder(String downloadPath, {String? targetFile}) async {
     try {
       String pathToOpen = downloadPath;
@@ -1419,16 +1840,16 @@ class _CompletedTasksState extends State<CompletedTasks> {
       if (result.type == ResultType.done) {
         _showSnackBar(
           context,
-          "Folder opened successfully.",
-          color: Colors.green,
-          icon: Icons.folder_open,
+          "Folder opened successfully! 📁",
+          color: const Color(0xFF10B981),
+          icon: Icons.folder_open_rounded,
         );
       } else {
         _showSnackBar(
           context,
           "Could not open folder.",
-          color: Colors.orange,
-          icon: Icons.warning,
+          color: const Color(0xFFF59E0B),
+          icon: Icons.warning_rounded,
         );
       }
     } catch (e) {
@@ -1436,10 +1857,567 @@ class _CompletedTasksState extends State<CompletedTasks> {
       _showSnackBar(
         context,
         "Error opening folder: ${e.toString()}",
-        color: Colors.red,
-        icon: Icons.error,
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
     }
+  }
+
+  Widget _buildQuickAction({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+    required String tooltip,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: color.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Icon(
+              icon,
+              color: color,
+              size: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTaskCard(task, int index) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final formatColor = _getFormatColor(task.format, context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 500;
+
+    String displayName;
+    if (task.fileName != null && task.fileName!.isNotEmpty) {
+      final base = path.basename(task.fileName!);
+      final baseNoExt = path.basenameWithoutExtension(base);
+      final ext = path.extension(base);
+      displayName = '${_sanitizeFileName(baseNoExt)}$ext';
+    } else {
+      displayName = task.url;
+    }
+
+    return AnimatedBuilder(
+      animation: _listAnimationController,
+      builder: (context, child) {
+        final slideAnimation = Tween<Offset>(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: _listAnimationController,
+          curve: Interval(
+            (index * 0.1).clamp(0.0, 1.0),
+            ((index * 0.1) + 0.3).clamp(0.0, 1.0),
+            curve: Curves.easeOutBack,
+          ),
+        ));
+
+        final fadeAnimation = Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(CurvedAnimation(
+          parent: _listAnimationController,
+          curve: Interval(
+            (index * 0.05).clamp(0.0, 1.0),
+            ((index * 0.05) + 0.5).clamp(0.0, 1.0),
+            curve: Curves.easeOut,
+          ),
+        ));
+
+        return SlideTransition(
+          position: slideAnimation,
+          child: FadeTransition(
+            opacity: fadeAnimation,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+              child: Material(
+                elevation: 0,
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.transparent,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: isDark
+                          ? [
+                              const Color(0xFF1E293B),
+                              const Color(0xFF0F172A).withOpacity(0.8),
+                            ]
+                          : [
+                              Colors.white,
+                              const Color(0xFFF8FAFC),
+                            ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark 
+                          ? const Color(0xFF334155).withOpacity(0.3)
+                          : const Color(0xFFE2E8F0).withOpacity(0.8),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                        spreadRadius: 0,
+                      ),
+                      BoxShadow(
+                        color: formatColor.withOpacity(0.05),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
+                        spreadRadius: -4,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => _openFile(task.fileName, task.downloadPath, task.format),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Padding(
+                        padding: EdgeInsets.all(isSmallScreen ? 14 : 18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Main content row
+                            Row(
+                              children: [
+                                // Format Icon
+                                Container(
+                                  padding: EdgeInsets.all(isSmallScreen ? 10 : 12),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        formatColor,
+                                        formatColor.withOpacity(0.8),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: formatColor.withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    _getFormatIcon(task.format),
+                                    color: Colors.white,
+                                    size: isSmallScreen ? 18 : 20,
+                                  ),
+                                ),
+                                
+                                const SizedBox(width: 12),
+                                
+                                // Content - Make expandable
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        displayName,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.inter(
+                                          fontSize: isSmallScreen ? 14 : 15,
+                                          fontWeight: FontWeight.w600,
+                                          color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                                          height: 1.3,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      // Tags row - Make them wrap properly
+                                      Wrap(
+                                        spacing: 6,
+                                        runSpacing: 4,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: task.format == "mp3" 
+                                                  ? const Color(0xFF8B5CF6).withOpacity(0.1)
+                                                  : const Color(0xFF3B82F6).withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                              border: Border.all(
+                                                color: task.format == "mp3" 
+                                                    ? const Color(0xFF8B5CF6).withOpacity(0.3)
+                                                    : const Color(0xFF3B82F6).withOpacity(0.3),
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              task.format == "mp3" ? "Audio" : "Video",
+                                              style: GoogleFonts.inter(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                                color: task.format == "mp3" 
+                                                    ? const Color(0xFF8B5CF6)
+                                                    : const Color(0xFF3B82F6),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF10B981).withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                              border: Border.all(
+                                                color: const Color(0xFF10B981).withOpacity(0.3),
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              task.mode == "playlist" ? "Playlist" : "Single",
+                                              style: GoogleFonts.inter(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                                color: const Color(0xFF10B981),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            
+                            const SizedBox(height: 12),
+                            
+                            // Action Buttons - Make them responsive
+                            if (isSmallScreen)
+                              // Stack vertically on small screens
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildQuickAction(
+                                          icon: Icons.refresh_rounded,
+                                          color: const Color(0xFF6366F1),
+                                          onPressed: () {
+                                            final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                                            downloadManager.requeueTask(task);
+                                          },
+                                          tooltip: "Download Again",
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: _buildQuickAction(
+                                          icon: Icons.play_arrow_rounded,
+                                          color: const Color(0xFF3B82F6),
+                                          onPressed: () => _openFile(task.fileName, task.downloadPath, task.format),
+                                          tooltip: "Open File",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildQuickAction(
+                                          icon: Icons.folder_open_rounded,
+                                          color: const Color(0xFF10B981),
+                                          onPressed: () => _openFolder(task.downloadPath, targetFile: task.fileName),
+                                          tooltip: "Open Folder",
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: _buildQuickAction(
+                                          icon: Icons.delete_rounded,
+                                          color: const Color(0xFFEF4444),
+                                          onPressed: () {
+                                            final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                                            downloadManager.removeCompletedTask(task);
+                                          },
+                                          tooltip: "Remove from List",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            else
+                              // Keep horizontal on larger screens
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  _buildQuickAction(
+                                    icon: Icons.refresh_rounded,
+                                    color: const Color(0xFF6366F1),
+                                    onPressed: () {
+                                      final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                                      downloadManager.requeueTask(task);
+                                    },
+                                    tooltip: "Download Again",
+                                  ),
+                                  _buildQuickAction(
+                                    icon: Icons.play_arrow_rounded,
+                                    color: const Color(0xFF3B82F6),
+                                    onPressed: () => _openFile(task.fileName, task.downloadPath, task.format),
+                                    tooltip: "Open File",
+                                  ),
+                                  _buildQuickAction(
+                                    icon: Icons.folder_open_rounded,
+                                    color: const Color(0xFF10B981),
+                                    onPressed: () => _openFolder(task.downloadPath, targetFile: task.fileName),
+                                    tooltip: "Open Folder",
+                                  ),
+                                  _buildQuickAction(
+                                    icon: Icons.delete_rounded,
+                                    color: const Color(0xFFEF4444),
+                                    onPressed: () {
+                                      final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                                      downloadManager.removeCompletedTask(task);
+                                    },
+                                    tooltip: "Remove from List",
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHeader(int completedCount) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 500;
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        children: [
+          Flex(
+            direction: isSmallScreen ? Axis.vertical : Axis.horizontal,
+            crossAxisAlignment: isSmallScreen ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF10B981), Color(0xFF059669)],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF10B981).withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.check_circle_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Completed Downloads",
+                          style: GoogleFonts.inter(
+                            fontSize: isSmallScreen ? 18 : 20,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$completedCount downloads completed",
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: isSmallScreen ? 0 : 16, height: isSmallScreen ? 16 : 0),
+              Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: isDark 
+                        ? const Color(0xFF334155).withOpacity(0.5)
+                        : const Color(0xFFE2E8F0),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => setState(() => _recentFirst = !_recentFirst),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _recentFirst ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                                size: 16,
+                                color: const Color(0xFF3B82F6),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                _recentFirst ? "Recent" : "Oldest",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF3B82F6),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 20,
+                      width: 1,
+                      color: isDark 
+                          ? const Color(0xFF334155).withOpacity(0.5)
+                          : const Color(0xFFE2E8F0),
+                    ),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                          downloadManager.clearAllCompletedTasks();
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.delete_sweep_rounded,
+                                size: 16,
+                                color: Color(0xFFEF4444),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                "Clear",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFFEF4444),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isDark 
+                  ? const Color(0xFF1E293B).withOpacity(0.5)
+                  : const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isDark 
+                    ? const Color(0xFF334155).withOpacity(0.3)
+                    : const Color(0xFFE2E8F0),
+                width: 2,
+              ),
+            ),
+            child: Icon(
+              Icons.download_done_rounded,
+              size: 48,
+              color: isDark 
+                  ? const Color(0xFF64748B) 
+                  : const Color(0xFF94A3B8),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            "No completed downloads yet",
+            style: GoogleFonts.inter(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Your completed downloads will appear here",
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -1452,116 +2430,19 @@ class _CompletedTasksState extends State<CompletedTasks> {
         }
 
         if (completed.isEmpty) {
-          return const Center(child: Text("No completed downloads yet."));
+          return _buildEmptyState();
         }
 
         return Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton.icon(
-                  icon: Icon(_recentFirst ? Icons.arrow_downward : Icons.arrow_upward),
-                  label: Text(_recentFirst ? "Recent First" : "Oldest First"),
-                  onPressed: () => setState(() => _recentFirst = !_recentFirst),
-                ),
-                TextButton.icon(
-                  icon: const Icon(Icons.delete_sweep),
-                  label: const Text("Clear All"),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
-                  onPressed: () {
-                    downloadManager.clearAllCompletedTasks();
-                    _showSnackBar(
-                      context,
-                      "All completed tasks cleared.",
-                      color: Colors.red,
-                      icon: Icons.delete_sweep,
-                    );
-                  },
-                ),
-              ],
-            ),
+            _buildHeader(completed.length),
             Expanded(
               child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 6),
                 itemCount: completed.length,
                 itemBuilder: (context, index) {
                   final task = completed[index];
-
-                  // Use the actual stored filename and extension for display when available
-                  String displayName;
-                  if (task.fileName != null && task.fileName!.isNotEmpty) {
-                    final base = path.basename(task.fileName!);
-                    final baseNoExt = path.basenameWithoutExtension(base);
-                    final ext = path.extension(base);
-                    displayName = '${_sanitizeFileName(baseNoExt)}$ext';
-                  } else {
-                    displayName = task.url;
-                  }
-
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: Card(
-                      elevation: 5,
-                      shadowColor: Colors.black26,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: _getFormatColor(task.format, context).withValues(alpha: 0.15),
-                          child: Icon(
-                            _getFormatIcon(task.format),
-                            color: _getFormatColor(task.format, context),
-                          ),
-                        ),
-                        title: Text(
-                          displayName,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          '${task.format == "mp3" ? "Audio" : "Video"} • ${task.mode == "playlist" ? "Playlist" : "Single"}',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Theme.of(context).textTheme.bodySmall?.color,
-                          ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Open file button
-                            IconButton(
-                              icon: const Icon(Icons.play_arrow, color: Colors.blue),
-                              tooltip: "Open File",
-                              onPressed: () => _openFile(task.fileName, task.downloadPath, task.format),
-                            ),
-                            // Open folder button (opens containing folder if known)
-                            IconButton(
-                              icon: const Icon(Icons.folder_open, color: Colors.green),
-                              tooltip: "Open Folder",
-                              onPressed: () => _openFolder(task.downloadPath, targetFile: task.fileName),
-                            ),
-                            // Delete button
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              tooltip: "Delete from List",
-                              onPressed: () {
-                                downloadManager.removeCompletedTask(task);
-                                _showSnackBar(
-                                  context,
-                                  "Task deleted from list.",
-                                  color: Colors.red,
-                                  icon: Icons.delete,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        onTap: () => _openFile(task.fileName, task.downloadPath, task.format),
-                      ),
-                    ),
-                  );
+                  return _buildTaskCard(task, index);
                 },
               ),
             ),
@@ -1576,13 +2457,11 @@ class _CompletedTasksState extends State<CompletedTasks> {
 File Location: lib\screens\components\download_input.dart
 File Name: download_input.dart
 File Code:
-// lib/screens/components/download_input.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '/models/download_manager.dart';
 import '/models/download_task.dart';
-import '/utils/file_picker.dart';
 
 class DownloadInput extends StatefulWidget {
   const DownloadInput({super.key});
@@ -1591,11 +2470,59 @@ class DownloadInput extends StatefulWidget {
   State<DownloadInput> createState() => _DownloadInputState();
 }
 
-class _DownloadInputState extends State<DownloadInput> {
+class _DownloadInputState extends State<DownloadInput>
+    with TickerProviderStateMixin {
   final TextEditingController _urlController = TextEditingController();
   String _selectedFormat = "mp4";
   String _selectedMode = "single";
+  
+  late AnimationController _bounceController;
+  late AnimationController _shimmerController;
+  late Animation<double> _bounceAnimation;
+  late Animation<double> _shimmerAnimation;
+  
+  bool _isHovering = false;
+  final FocusNode _urlFocusNode = FocusNode();
 
+  @override
+  void initState() {
+    super.initState();
+    
+    _bounceController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    
+    _shimmerController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat();
+    
+    _bounceAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.05,
+    ).animate(CurvedAnimation(
+      parent: _bounceController,
+      curve: Curves.elasticOut,
+    ));
+    
+    _shimmerAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _shimmerController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _urlController.dispose();
+    _urlFocusNode.dispose();
+    _bounceController.dispose();
+    _shimmerController.dispose();
+    super.dispose();
+  }
 
   void _showSnackBar(String message, {Color? color, IconData? icon}) {
     ScaffoldMessenger.of(context)
@@ -1603,44 +2530,71 @@ class _DownloadInputState extends State<DownloadInput> {
       ..showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          backgroundColor: color ?? Colors.blueGrey,
-          content: Row(
-            children: [
-              if (icon != null) ...[
-                Icon(icon, color: Colors.white),
-                const SizedBox(width: 10),
-              ],
-              Expanded(
-                child: Text(
-                  message,
-                  style: const TextStyle(color: Colors.white),
-                  overflow: TextOverflow.visible,
-                ),
-              ),
-            ],
+          margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+            vertical: 16,
           ),
+          backgroundColor: color ?? Theme.of(context).colorScheme.primary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 12,
+          content: Container(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                if (icon != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 18),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    message,
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      letterSpacing: 0.1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          duration: const Duration(seconds: 4),
         ),
       );
   }
 
-  void _addToQueue() {
+  void _addToQueue() async {
     final downloadManager = Provider.of<DownloadManager>(context, listen: false);
     final url = _urlController.text.trim();
 
+    // Trigger bounce animation
+    _bounceController.forward().then((_) {
+      _bounceController.reverse();
+    });
+
     if (url.isEmpty) {
       _showSnackBar(
-        "Please enter a YouTube URL.",
-        color: Colors.red,
-        icon: Icons.error,
+        "Please enter a YouTube URL first.",
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
+      _urlFocusNode.requestFocus();
       return;
     }
 
     if (downloadManager.downloadPath == null) {
       _showSnackBar(
-        "Please select a download folder.",
-        color: Colors.red,
-        icon: Icons.folder_off,
+        "Please select a download destination folder.",
+        color: const Color(0xFFEF4444),
+        icon: Icons.folder_off_rounded,
       );
       return;
     }
@@ -1657,243 +2611,1368 @@ class _DownloadInputState extends State<DownloadInput> {
     
     _showSnackBar(
       _selectedFormat == "mp3" 
-        ? "Audio download added with best quality format."
-        : "Video download added with best quality format.",
-      color: Colors.green,
-      icon: Icons.check_circle,
+        ? "🎵 Audio download queued with premium quality"
+        : "🎬 Video download queued with best resolution",
+      color: const Color(0xFF10B981),
+      icon: Icons.check_circle_rounded,
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildGradientCard() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final downloadButtonColor = isDark ? Colors.pinkAccent : Theme.of(context).colorScheme.primary;
-
-    return Card(
-      elevation: 7,
-      shadowColor: Colors.black26,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          children: [
-            // URL Input Field
-            TextField(
-              controller: _urlController,
-              decoration: InputDecoration(
-                labelText: "Enter YouTube URL",
-                prefixIcon: const Icon(Icons.link),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSmallScreen = screenHeight < 600 || screenWidth < 400;
+    
+    return AnimatedBuilder(
+      animation: _bounceAnimation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _bounceAnimation.value,
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: screenWidth * 0.95,
             ),
-            const SizedBox(height: 14),
-
-            // Format & Mode Selection in a Row
-            Row(
-              children: [
-                // Format Dropdown (Video/Audio)
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedFormat,
-                    decoration: InputDecoration(
-                      labelText: "Quality",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                    ),
-                    isExpanded: true,
-                    onChanged: (value) => setState(() => _selectedFormat = value!),
-                    items: const [
-                      DropdownMenuItem(
-                        value: "mp4",
-                        child: Row(
-                          children: [
-                            Icon(Icons.high_quality, color: Colors.blue),
-                            SizedBox(width: 8),
-                            Text("Best Video + Audio"),
-                          ],
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: "mp3",
-                        child: Row(
-                          children: [
-                            Icon(Icons.audiotrack, color: Colors.deepPurple),
-                            SizedBox(width: 8),
-                            Text("Best Audio Only"),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(isSmallScreen ? 18 : 24),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                    ? [
+                        const Color(0xFF1E293B),
+                        const Color(0xFF0F172A),
+                      ]
+                    : [
+                        Colors.white,
+                        const Color(0xFFF8FAFC),
+                      ],
+              ),
+              border: Border.all(
+                color: isDark 
+                    ? const Color(0xFF334155).withOpacity(0.3)
+                    : const Color(0xFFE2E8F0).withOpacity(0.8),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.4 : 0.08),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
                 ),
-                const SizedBox(width: 16),
-
-                // Mode Dropdown (Single/Playlist)
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedMode,
-                    decoration: InputDecoration(
-                      labelText: "Mode",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                    ),
-                    isExpanded: true,
-                    onChanged: (value) => setState(() => _selectedMode = value!),
-                    items: const [
-                      DropdownMenuItem(
-                        value: "single",
-                        child: Row(
-                          children: [
-                            Icon(Icons.music_note, color: Colors.teal),
-                            SizedBox(width: 8),
-                            Text("Single"),
-                          ],
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: "playlist",
-                        child: Row(
-                          children: [
-                            Icon(Icons.queue_music, color: Colors.orange),
-                            SizedBox(width: 8),
-                            Text("Playlist"),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                BoxShadow(
+                  color: const Color(0xFF6366F1).withOpacity(0.1),
+                  blurRadius: 40,
+                  offset: const Offset(0, 16),
+                  spreadRadius: -8,
                 ),
               ],
             ),
-            const SizedBox(height: 14),
-
-            // Quality Info Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_outline,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      _selectedFormat == "mp3"
-                          ? "Audio: Highest bitrate format will be automatically selected"
-                          : "Video: Best resolution + audio combination will be automatically selected",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).textTheme.bodySmall?.color,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 14),
-
-            // Folder Selection
-            Consumer<DownloadManager>(
-              builder: (context, downloadManager, child) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        downloadManager.downloadPath ?? "Tap folder icon to select download path",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: downloadManager.downloadPath != null
-                              ? Theme.of(context).textTheme.bodyMedium?.color
-                              : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () async {
-                        await downloadManager.setDownloadPath();
-                      },
-                      icon: const Icon(Icons.folder_open),
-                      tooltip: "Select Download Folder",
-                    ),
-                  ],
-                );
-              },
-            ),
-
-            const SizedBox(height: 14),
-
-            // Download Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 4,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  backgroundColor: downloadButtonColor,
-                  foregroundColor: Colors.white,
-                ),
-                icon: const Icon(Icons.download),
-                label: const Text("Add to Queue"),
-                onPressed: _addToQueue,
-              ),
-            ),
+            child: child,
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.all(isSmallScreen ? 20.0 : 28.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeader(),
+            SizedBox(height: isSmallScreen ? 20 : 32),
+            _buildUrlInput(),
+            SizedBox(height: isSmallScreen ? 16 : 24),
+            _buildFormatAndModeRow(),
+            SizedBox(height: isSmallScreen ? 16 : 24),
+            _buildQualityInfoCard(),
+            SizedBox(height: isSmallScreen ? 16 : 24),
+            _buildFolderSelection(),
+            SizedBox(height: isSmallScreen ? 20 : 32),
+            _buildDownloadButton(),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildHeader() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 400;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Flex(
+          direction: isSmallScreen ? Axis.vertical : Axis.horizontal,
+          crossAxisAlignment: isSmallScreen ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF6366F1).withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.download_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            SizedBox(width: isSmallScreen ? 0 : 14, height: isSmallScreen ? 12 : 0),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: isSmallScreen ? CrossAxisAlignment.start : CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Download Content",
+                    style: GoogleFonts.inter(
+                      fontSize: isSmallScreen ? 18 : 20,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                      letterSpacing: -0.4,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "High-quality downloads from YouTube",
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                      letterSpacing: 0.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUrlInput() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "YouTube URL",
+          style: GoogleFonts.inter(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+            letterSpacing: -0.1,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: TextField(
+            controller: _urlController,
+            focusNode: _urlFocusNode,
+            style: GoogleFonts.inter(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.1,
+            ),
+            decoration: InputDecoration(
+              hintText: "Paste your YouTube link here...",
+              prefixIcon: Container(
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6366F1).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.link_rounded,
+                  color: Color(0xFF6366F1),
+                  size: 18,
+                ),
+              ),
+              suffixIcon: _urlController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear_rounded, size: 20),
+                      onPressed: () {
+                        setState(() {
+                          _urlController.clear();
+                        });
+                      },
+                    )
+                  : null,
+            ),
+            onChanged: (value) {
+              setState(() {});
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFormatAndModeRow() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 500;
+    
+    return Flex(
+      direction: isSmallScreen ? Axis.vertical : Axis.horizontal,
+      children: [
+        Flexible(child: _buildFormatDropdown()),
+        SizedBox(width: isSmallScreen ? 0 : 16, height: isSmallScreen ? 16 : 0),
+        Flexible(child: _buildModeDropdown()),
+      ],
+    );
+  }
+
+ Widget _buildFormatDropdown() {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Quality",
+        style: GoogleFonts.inter(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+          letterSpacing: -0.1,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: DropdownButtonFormField<String>(
+          value: _selectedFormat,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+          ),
+          isExpanded: true,
+          dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          onChanged: (value) => setState(() => _selectedFormat = value!),
+          menuMaxHeight: 150, // Limit dropdown height
+          items: [
+            DropdownMenuItem(
+              value: "mp4",
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3B82F6).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(
+                        Icons.high_quality_rounded,
+                        color: Color(0xFF3B82F6),
+                        size: 16, 
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Best Video",
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12, 
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+            ),
+            DropdownMenuItem(
+              value: "mp3",
+              child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4), 
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF8B5CF6).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(
+                        Icons.audiotrack_rounded,
+                        color: Color(0xFF8B5CF6),
+                        size: 16,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Best Audio",
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildModeDropdown() {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Mode",
+        style: GoogleFonts.inter(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+          letterSpacing: -0.1,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: DropdownButtonFormField<String>(
+          value: _selectedMode,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+          ),
+          isExpanded: true,
+          dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          onChanged: (value) => setState(() => _selectedMode = value!),
+          menuMaxHeight: 150, 
+          items: [
+            DropdownMenuItem(
+              value: "single",
+              child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4), 
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF06B6D4).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(
+                        Icons.music_note_rounded,
+                        color: Color(0xFF06B6D4),
+                        size: 16,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Single",
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+            ),
+            DropdownMenuItem(
+              value: "playlist",
+              child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF59E0B).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(
+                        Icons.queue_music_rounded,
+                        color: Color(0xFFF59E0B),
+                        size: 16,
+                      ),
+                    ),
+                    const SizedBox(width: 8), 
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Playlist",
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+
+  Widget _buildQualityInfoCard() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Container(
+      constraints: const BoxConstraints(minHeight: 60),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark
+              ? [
+                  const Color(0xFF6366F1).withOpacity(0.1),
+                  const Color(0xFF8B5CF6).withOpacity(0.05),
+                ]
+              : [
+                  const Color(0xFF6366F1).withOpacity(0.05),
+                  const Color(0xFF8B5CF6).withOpacity(0.08),
+                ],
+        ),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFF6366F1).withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFF6366F1).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.auto_awesome_rounded,
+              color: Color(0xFF6366F1),
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Smart Quality Selection",
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _selectedFormat == "mp3"
+                      ? "Automatically selects the highest quality audio format available"
+                      : "Automatically selects the best video quality with perfect audio sync",
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFolderSelection() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 400;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Download Location",
+          style: GoogleFonts.inter(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+            letterSpacing: -0.1,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Consumer<DownloadManager>(
+          builder: (context, downloadManager, child) {
+            return Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF334155).withOpacity(0.3) : const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: isDark 
+                      ? const Color(0xFF475569).withOpacity(0.5)
+                      : const Color(0xFFE2E8F0),
+                  width: 1.5,
+                ),
+              ),
+              child: Flex(
+                direction: isSmallScreen ? Axis.vertical : Axis.horizontal,
+                crossAxisAlignment: isSmallScreen ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: downloadManager.downloadPath != null
+                                ? const Color(0xFF10B981).withOpacity(0.1)
+                                : const Color(0xFF6B7280).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(
+                            downloadManager.downloadPath != null
+                                ? Icons.folder_rounded
+                                : Icons.folder_outlined,
+                            color: downloadManager.downloadPath != null
+                                ? const Color(0xFF10B981)
+                                : const Color(0xFF6B7280),
+                            size: 18,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                downloadManager.downloadPath != null ? "Selected Folder" : "No folder selected",
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: downloadManager.downloadPath != null
+                                      ? const Color(0xFF10B981)
+                                      : const Color(0xFF6B7280),
+                                ),
+                              ),
+                              if (downloadManager.downloadPath != null) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  downloadManager.downloadPath!,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                                  ),
+                                ),
+                              ] else ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  "Choose where to save your downloads",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: isSmallScreen ? 0 : 12, height: isSmallScreen ? 12 : 0),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF6366F1).withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      iconSize: 18,
+                      onPressed: () async {
+                        await downloadManager.setDownloadPath();
+                      },
+                      icon: const Icon(Icons.folder_open_rounded, color: Colors.white),
+                      tooltip: "Choose Download Folder",
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDownloadButton() {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSmallScreen = screenHeight < 600;
+    
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.identity()..scale(_isHovering ? 1.02 : 1.0),
+        child: Container(
+          width: double.infinity,
+          height: isSmallScreen ? 52 : 56,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF6366F1).withOpacity(0.4),
+                blurRadius: _isHovering ? 20 : 12,
+                offset: Offset(0, _isHovering ? 8 : 4),
+                spreadRadius: _isHovering ? 2 : 0,
+              ),
+            ],
+          ),
+          child: AnimatedBuilder(
+            animation: _shimmerAnimation,
+            builder: (context, child) {
+              return Stack(
+                children: [
+                  // Shimmer effect
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white.withOpacity(0.0),
+                            Colors.white.withOpacity(0.1),
+                            Colors.white.withOpacity(0.0),
+                          ],
+                          stops: const [0.0, 0.5, 1.0],
+                          begin: Alignment(-1.0 + 2.0 * _shimmerAnimation.value, 0.0),
+                          end: Alignment(1.0 + 2.0 * _shimmerAnimation.value, 0.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Button content
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _addToQueue,
+                      borderRadius: BorderRadius.circular(14),
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        alignment: Alignment.center,
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.download_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "Add to Download Queue",
+                              style: GoogleFonts.inter(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
-  void dispose() {
-    _urlController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return _buildGradientCard();
   }
 }
+
 ----------------------------------------
 File Location: lib\screens\components\ongoing_tasks.dart
 File Name: ongoing_tasks.dart
 File Code:
-// lib/screens/components/ongoing_tasks.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '/models/download_manager.dart';
 
-class OngoingTasks extends StatelessWidget {
+class OngoingTasks extends StatefulWidget {
   const OngoingTasks({super.key});
+
+  @override
+  State<OngoingTasks> createState() => _OngoingTasksState();
+}
+
+class _OngoingTasksState extends State<OngoingTasks>
+    with TickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _pulseAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _pulseController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  bool _isSmallScreen() {
+    return MediaQuery.of(context).size.width < 480;
+  }
+
+  double _getResponsivePadding() {
+    final width = MediaQuery.of(context).size.width;
+    if (width < 480) return width * 0.04;
+    if (width < 768) return width * 0.06;
+    return width * 0.08;
+  }
+
+  double _getResponsiveFontSize(double baseSize) {
+    final shortestSide = MediaQuery.of(context).size.shortestSide;
+    if (shortestSide < 360) return baseSize * 0.85;
+    if (shortestSide < 480) return baseSize * 0.9;
+    if (shortestSide < 600) return baseSize;
+    return baseSize * 1.1;
+  }
+
+  double _getResponsiveIconSize(double baseSize) {
+    return _getResponsiveFontSize(baseSize);
+  }
 
   IconData _getFormatIcon(String format) {
     switch (format) {
       case 'mp3':
-        return Icons.audiotrack;
+        return Icons.audiotrack_rounded;
       case 'mp4':
-        return Icons.videocam;
+        return Icons.videocam_rounded;
       default:
-        return Icons.insert_drive_file;
+        return Icons.insert_drive_file_rounded;
     }
   }
 
   Color _getFormatColor(String format, BuildContext context) {
     switch (format) {
       case 'mp3':
-        return Theme.of(context).colorScheme.secondary;
+        return const Color(0xFF8B5CF6);
       case 'mp4':
-        return Theme.of(context).colorScheme.primary;
+        return const Color(0xFF3B82F6);
       default:
-        return Colors.grey;
+        return const Color(0xFF6B7280);
     }
+  }
+
+  Widget _buildEmptyState() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final responsivePadding = _getResponsivePadding();
+    final iconSize = _getResponsiveIconSize(48);
+    final fontSizeTitle = _getResponsiveFontSize(20);
+    final fontSizeSubtitle = _getResponsiveFontSize(16);
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _pulseAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _pulseAnimation.value,
+                child: Container(
+                  padding: EdgeInsets.all(responsivePadding * 1.5),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFF6366F1).withOpacity(0.1),
+                        const Color(0xFF8B5CF6).withOpacity(0.05),
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFF6366F1).withOpacity(0.2),
+                      width: 2,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.download_rounded,
+                    size: iconSize,
+                    color: const Color(0xFF6366F1).withOpacity(0.7),
+                  ),
+                ),
+              );
+            },
+          ),
+          SizedBox(height: responsivePadding),
+          Text(
+            "No Active Downloads",
+            style: GoogleFonts.inter(
+              fontSize: fontSizeTitle,
+              fontWeight: FontWeight.w600,
+              color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+            ),
+          ),
+          SizedBox(height: responsivePadding / 2),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: responsivePadding * 2),
+            child: Text(
+              "Your downloads will appear here once you add them to the queue",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: fontSizeSubtitle,
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                height: 1.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTaskCard(task, int index) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final formatColor = _getFormatColor(task.format, context);
+    final responsivePadding = _getResponsivePadding();
+    final isSmall = _isSmallScreen();
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300 + (index * 100)),
+      curve: Curves.easeOutBack,
+      margin: EdgeInsets.only(bottom: responsivePadding),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+                ? [
+                    const Color(0xFF1E293B),
+                    const Color(0xFF0F172A),
+                  ]
+                : [
+                    Colors.white,
+                    const Color(0xFFF8FAFC),
+                  ],
+          ),
+          borderRadius: BorderRadius.circular(isSmall ? 16 : 20),
+          border: Border.all(
+            color: isDark
+                ? const Color(0xFF334155).withOpacity(0.3)
+                : const Color(0xFFE2E8F0).withOpacity(0.8),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: formatColor.withOpacity(0.1),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+              spreadRadius: -4,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(isSmall ? responsivePadding * 0.8 : responsivePadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildFormatIcon(task, formatColor),
+                  SizedBox(width: responsivePadding * 0.75),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          task.fileName ?? task.url,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: _getResponsiveFontSize(15),
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                            height: 1.3,
+                          ),
+                        ),
+                        SizedBox(height: responsivePadding / 3),
+                        _buildTaskMetadata(task, isDark),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: responsivePadding * 0.75),
+                  _buildTaskStatus(task, isDark),
+                ],
+              ),
+              SizedBox(height: responsivePadding),
+              _buildProgressSection(task, formatColor, isDark),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormatIcon(task, Color formatColor) {
+    final iconSize = _getResponsiveIconSize(24);
+    final padding = _getResponsivePadding();
+
+    return AnimatedBuilder(
+      animation: _pulseAnimation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: task.isDownloading ? _pulseAnimation.value : 1.0,
+          child: Container(
+            padding: EdgeInsets.all(_isSmallScreen() ? padding * 0.75 : padding),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  formatColor.withOpacity(0.15),
+                  formatColor.withOpacity(0.05),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(_isSmallScreen() ? 12 : 16),
+              border: Border.all(
+                color: formatColor.withOpacity(0.3),
+                width: 1.5,
+              ),
+            ),
+            child: Icon(
+              _getFormatIcon(task.format),
+              color: formatColor,
+              size: iconSize,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTaskMetadata(task, bool isDark) {
+    final fontSize = _getResponsiveFontSize(11);
+    final padding = _getResponsivePadding() / 2;
+
+    return Wrap(
+      spacing: padding,
+      runSpacing: padding / 2,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: padding * 1.5, vertical: padding / 1.5),
+          decoration: BoxDecoration(
+            color: task.format == "mp3"
+                ? const Color(0xFF8B5CF6).withOpacity(0.1)
+                : const Color(0xFF3B82F6).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: task.format == "mp3"
+                  ? const Color(0xFF8B5CF6).withOpacity(0.3)
+                  : const Color(0xFF3B82F6).withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            task.format == "mp3" ? "Audio" : "Video",
+            style: GoogleFonts.inter(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w600,
+              color: task.format == "mp3"
+                  ? const Color(0xFF8B5CF6)
+                  : const Color(0xFF3B82F6),
+            ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: padding * 1.5, vertical: padding / 1.5),
+          decoration: BoxDecoration(
+            color: task.mode == "playlist"
+                ? const Color(0xFFF59E0B).withOpacity(0.1)
+                : const Color(0xFF06B6D4).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: task.mode == "playlist"
+                  ? const Color(0xFFF59E0B).withOpacity(0.3)
+                  : const Color(0xFF06B6D4).withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            task.mode == "playlist" ? "Playlist" : "Single",
+            style: GoogleFonts.inter(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w600,
+              color: task.mode == "playlist"
+                  ? const Color(0xFFF59E0B)
+                  : const Color(0xFF06B6D4),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTaskStatus(task, bool isDark) {
+    final fontSize = _getResponsiveFontSize(12);
+    final iconSize = _getResponsiveIconSize(16);
+    final padding = _getResponsivePadding() * 0.75;
+
+    if (task.isProcessing) {
+      return Container(
+        padding: EdgeInsets.all(padding * 0.75),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFF59E0B).withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: iconSize,
+              height: iconSize,
+              child: const CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            SizedBox(width: padding / 2),
+            Text(
+              "Processing",
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontSize: fontSize,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (task.isDownloading) {
+      return Container(
+        padding: EdgeInsets.all(padding * 0.75),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF10B981), Color(0xFF059669)],
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF10B981).withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.download_rounded,
+              color: Colors.white,
+              size: iconSize,
+            ),
+            SizedBox(width: padding / 2),
+            Text(
+              "Downloading",
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontSize: fontSize,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding / 2),
+      decoration: BoxDecoration(
+        color: isDark
+            ? const Color(0xFF374151).withOpacity(0.5)
+            : const Color(0xFFF3F4F6),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark
+              ? const Color(0xFF4B5563).withOpacity(0.5)
+              : const Color(0xFFE5E7EB),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        "In Queue",
+        style: GoogleFonts.inter(
+          fontSize: fontSize,
+          fontWeight: FontWeight.w500,
+          color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressSection(task, Color formatColor, bool isDark) {
+    final fontSize = _getResponsiveFontSize(14);
+    final padding = _getResponsivePadding();
+    final progressHeight = _isSmallScreen() ? 6.0 : 8.0;
+
+    if (!task.isDownloading && !task.isProcessing) {
+      return Container(
+        padding: EdgeInsets.all(padding * 0.75),
+        decoration: BoxDecoration(
+          color: isDark
+              ? const Color(0xFF374151).withOpacity(0.3)
+              : const Color(0xFFF9FAFB),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDark
+                ? const Color(0xFF4B5563).withOpacity(0.3)
+                : const Color(0xFFE5E7EB),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.schedule_rounded,
+              color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+              size: _getResponsiveIconSize(20),
+            ),
+            SizedBox(width: padding * 0.75),
+            Expanded(
+              child: Text(
+                "Waiting in queue...",
+                style: GoogleFonts.inter(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w500,
+                  color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              task.isProcessing ? "Processing..." : "Downloading...",
+              style: GoogleFonts.inter(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w600,
+                color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+              ),
+            ),
+            Text(
+              "${(task.progress * 100).toStringAsFixed(1)}%",
+              style: GoogleFonts.inter(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w700,
+                color: formatColor,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: padding / 2),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(progressHeight),
+          child: Container(
+            height: progressHeight,
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(0xFF374151).withOpacity(0.5)
+                  : const Color(0xFFF3F4F6),
+              borderRadius: BorderRadius.circular(progressHeight),
+            ),
+            child: Stack(
+              children: [
+                FractionallySizedBox(
+                  widthFactor: task.progress,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          formatColor,
+                          formatColor.withOpacity(0.8),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(progressHeight),
+                      boxShadow: [
+                        BoxShadow(
+                          color: formatColor.withOpacity(0.4),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (task.isDownloading && !task.isProcessing)
+                  AnimatedBuilder(
+                    animation: _pulseController,
+                    builder: (context, child) {
+                      return FractionallySizedBox(
+                        widthFactor: task.progress,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.white.withOpacity(0.0),
+                                Colors.white.withOpacity(0.3 * _pulseAnimation.value),
+                                Colors.white.withOpacity(0.0),
+                              ],
+                              stops: const [0.0, 0.5, 1.0],
+                            ),
+                            borderRadius: BorderRadius.circular(progressHeight),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -1901,99 +3980,15 @@ class OngoingTasks extends StatelessWidget {
     return Consumer<DownloadManager>(
       builder: (context, downloadManager, child) {
         if (downloadManager.downloadQueue.isEmpty) {
-          return const Center(child: Text("No downloads in progress."));
+          return _buildEmptyState();
         }
 
         return ListView.builder(
+          padding: EdgeInsets.only(bottom: _getResponsivePadding() * 2),
           itemCount: downloadManager.downloadQueue.length,
           itemBuilder: (context, index) {
             final task = downloadManager.downloadQueue[index];
-
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 350),
-              curve: Curves.easeInOut,
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: Card(
-                elevation: 5,
-                shadowColor: Colors.black26,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: _getFormatColor(task.format, context).withOpacity(0.15),
-                    child: Icon(
-                      _getFormatIcon(task.format),
-                      color: _getFormatColor(task.format, context),
-                    ),
-                  ),
-                  title: Text(
-                    task.fileName ?? task.url,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${task.format == "mp3" ? "Audio" : "Video"} • ${task.mode == "playlist" ? "Playlist" : "Single"}',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Theme.of(context).textTheme.bodySmall?.color,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 400),
-                        child: task.isDownloading
-                            ? Column(
-                                key: const ValueKey("progress"),
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  LinearProgressIndicator(
-                                    value: task.progress,
-                                    minHeight: 8, // Increased height for better visibility
-                                    backgroundColor: Theme.of(context).brightness == Brightness.dark
-                                        ? Colors.grey[800]
-                                        : Colors.grey[300],
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      task.format == "mp3"
-                                          ? Colors.deepPurpleAccent // Bright purple for audio
-                                          : Colors.blueAccent,     // Bright blue for video
-                                    ),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-
-
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "${(task.progress * 100).toStringAsFixed(1)}%",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context).colorScheme.primary,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Container(
-                                key: const ValueKey("queued"),
-                                padding: const EdgeInsets.symmetric(vertical: 6),
-                                child: Text(
-                                  "Queued",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Theme.of(context).hintColor,
-                                  ),
-                                ),
-                              ),
-                      ),
-                    ],
-                  ),
-                  // Optionally, add a trailing cancel button or icon here
-                ),
-              ),
-            );
+            return _buildTaskCard(task, index);
           },
         );
       },

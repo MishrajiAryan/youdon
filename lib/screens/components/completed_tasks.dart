@@ -2,12 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '/models/download_manager.dart';
 import 'package:open_file/open_file.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'dart:math';
-import 'package:flutter/foundation.dart'; // for debugPrint and kDebugMode
+import 'package:flutter/foundation.dart';
 
 class CompletedTasks extends StatefulWidget {
   const CompletedTasks({super.key});
@@ -16,28 +17,46 @@ class CompletedTasks extends StatefulWidget {
   State<CompletedTasks> createState() => _CompletedTasksState();
 }
 
-class _CompletedTasksState extends State<CompletedTasks> {
+class _CompletedTasksState extends State<CompletedTasks>
+    with TickerProviderStateMixin {
   bool _recentFirst = true;
+  late AnimationController _listAnimationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _listAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _listAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _listAnimationController.dispose();
+    super.dispose();
+  }
 
   IconData _getFormatIcon(String format) {
     switch (format) {
       case 'mp3':
-        return Icons.audiotrack;
+        return Icons.audiotrack_rounded;
       case 'mp4':
-        return Icons.videocam;
+        return Icons.videocam_rounded;
       default:
-        return Icons.insert_drive_file;
+        return Icons.insert_drive_file_rounded;
     }
   }
 
   Color _getFormatColor(String format, BuildContext context) {
     switch (format) {
       case 'mp3':
-        return Theme.of(context).colorScheme.secondary;
+        return const Color(0xFF8B5CF6);
       case 'mp4':
-        return Theme.of(context).colorScheme.primary;
+        return const Color(0xFF3B82F6);
       default:
-        return Colors.grey;
+        return const Color(0xFF64748B);
     }
   }
 
@@ -47,16 +66,42 @@ class _CompletedTasksState extends State<CompletedTasks> {
       ..showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          backgroundColor: color ?? Colors.blueGrey,
-          content: Row(
-            children: [
-              if (icon != null) ...[
-                Icon(icon, color: Colors.white),
-                const SizedBox(width: 12),
-              ],
-              Expanded(child: Text(message, style: const TextStyle(color: Colors.white))),
-            ],
+          margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+            vertical: 16,
           ),
+          backgroundColor: color ?? const Color(0xFF6366F1),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 12,
+          content: Container(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                if (icon != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 18),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    message,
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          duration: const Duration(seconds: 4),
         ),
       );
   }
@@ -66,11 +111,9 @@ class _CompletedTasksState extends State<CompletedTasks> {
     if (s1 == s2) return 1.0;
     if (s1.isEmpty || s2.isEmpty) return 0.0;
 
-    // Convert to lowercase for case-insensitive comparison
     s1 = s1.toLowerCase();
     s2 = s2.toLowerCase();
 
-    // Levenshtein distance-based similarity
     final len1 = s1.length;
     final len2 = s2.length;
     final maxLen = max(len1, len2);
@@ -80,12 +123,10 @@ class _CompletedTasksState extends State<CompletedTasks> {
     return 1.0 - (distance / maxLen);
   }
 
-  // Levenshtein distance calculation (fixed initialization to avoid invalid_assignment)
   int _levenshteinDistance(String s1, String s2) {
     final len1 = s1.length;
     final len2 = s2.length;
 
-    // Explicit generic types avoid inference pitfalls
     final List<List<int>> matrix = List<List<int>>.generate(
       len1 + 1,
       (_) => List<int>.filled(len2 + 1, 0, growable: false),
@@ -103,9 +144,9 @@ class _CompletedTasksState extends State<CompletedTasks> {
       for (int j = 1; j <= len2; j++) {
         final cost = s1[i - 1] == s2[j - 1] ? 0 : 1;
         matrix[i][j] = [
-          matrix[i - 1][j] + 1, // deletion
-          matrix[i][j - 1] + 1, // insertion
-          matrix[i - 1][j - 1] + cost // substitution
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
         ].reduce(min);
       }
     }
@@ -113,32 +154,19 @@ class _CompletedTasksState extends State<CompletedTasks> {
     return matrix[len1][len2];
   }
 
-  // Method to sanitize and normalize filenames for better matching
   String _sanitizeFileName(String fileName) {
     String sanitized = fileName;
-
-    // Remove yt-dlp format codes like .f234, .F123, etc.
     sanitized = sanitized.replaceAll(RegExp(r'\.[fF]\d+'), '');
-
-    // Normalize whitespace
     sanitized = sanitized.replaceAll(RegExp(r'\s+'), ' ');
-
-    // Remove common special characters that might differ
     sanitized = sanitized.replaceAll(RegExp(r'[""｜|•·\-_()\[\]]'), '');
-
-    // Remove common words that might be inconsistent
     sanitized = sanitized.replaceAll(
       RegExp(r'\b(full|song|with|lyrics|video|audio|official|hd|4k)\b', caseSensitive: false),
       '',
     );
-
-    // Clean up extra spaces
     sanitized = sanitized.replaceAll(RegExp(r'\s+'), ' ');
-
     return sanitized.trim();
   }
 
-  // Enhanced fuzzy file finder (expanded extensions and debugPrint)
   String? _findBestMatch(
     String targetName,
     List<FileSystemEntity> files,
@@ -148,10 +176,9 @@ class _CompletedTasksState extends State<CompletedTasks> {
     final sanitizedTarget = _sanitizeFileName(targetName);
     debugPrint("DEBUG: Looking for fuzzy match for: '$sanitizedTarget'");
 
-    // Broaden valid extensions to cover common outputs/conversions
     final List<String> validExtensions = format == 'mp3'
-        ? <String>['.mp3', '.m4a', '.aac', '.opus', '.wav', '.flac']
-        : <String>['.mp4', '.mkv', '.webm', '.mov', '.avi'];
+        ? ['.mp3', '.m4a', '.aac', '.opus', '.wav', '.flac']
+        : ['.mp4', '.mkv', '.webm', '.mov', '.avi'];
 
     String? bestMatch;
     double bestSimilarity = 0.0;
@@ -161,18 +188,13 @@ class _CompletedTasksState extends State<CompletedTasks> {
         final fileName = path.basename(file.path);
         final fileExtension = path.extension(file.path).toLowerCase();
 
-        // Check if extension matches format
         if (!validExtensions.contains(fileExtension)) continue;
 
         final fileNameWithoutExt = path.basenameWithoutExtension(fileName);
         final sanitizedFileName = _sanitizeFileName(fileNameWithoutExt);
 
-        // Calculate similarity
         double similarity = _calculateSimilarity(sanitizedTarget, sanitizedFileName);
 
-        debugPrint("DEBUG: Comparing '$sanitizedTarget' with '$sanitizedFileName': similarity = $similarity");
-
-        // Also check if one string contains the other (for partial matches)
         if (similarity < threshold) {
           if (sanitizedTarget.contains(sanitizedFileName) || sanitizedFileName.contains(sanitizedTarget)) {
             final containsSimilarity =
@@ -180,7 +202,6 @@ class _CompletedTasksState extends State<CompletedTasks> {
                     max(sanitizedTarget.length, sanitizedFileName.length).toDouble();
             if (containsSimilarity > 0.5) {
               similarity = max(similarity, containsSimilarity);
-              debugPrint("DEBUG: Boosted similarity using substring match: $similarity");
             }
           }
         }
@@ -188,28 +209,20 @@ class _CompletedTasksState extends State<CompletedTasks> {
         if (similarity > bestSimilarity && similarity >= threshold) {
           bestSimilarity = similarity;
           bestMatch = file.path;
-          debugPrint("DEBUG: New best match: '$fileName' with similarity $similarity");
         }
       }
-    }
-
-    if (bestMatch != null) {
-      debugPrint("DEBUG: Best match found: '$bestMatch' with similarity $bestSimilarity");
-    } else {
-      debugPrint("DEBUG: No match found above threshold $threshold");
     }
 
     return bestMatch;
   }
 
-  // Enhanced method to find and open file with fuzzy matching
   Future<void> _openFile(String? storedFileName, String downloadPath, String format) async {
     if (storedFileName == null || storedFileName.isEmpty) {
       _showSnackBar(
         context,
         "File path not available.",
-        color: Colors.red,
-        icon: Icons.error,
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
       return;
     }
@@ -217,29 +230,17 @@ class _CompletedTasksState extends State<CompletedTasks> {
     try {
       String? actualFilePath;
 
-      debugPrint("DEBUG: Stored filename: $storedFileName");
-      debugPrint("DEBUG: Download path: $downloadPath");
-      debugPrint("DEBUG: Format: $format");
-
-      // First try the original path
       final originalFile = File(storedFileName);
       if (await originalFile.exists()) {
         actualFilePath = storedFileName;
-        debugPrint("DEBUG: Found file at original path: $actualFilePath");
       }
 
-      // If not found, try fuzzy matching in download directory (recursive for playlist folders)
       if (actualFilePath == null) {
-        debugPrint("DEBUG: Starting fuzzy search in download directory (recursive)...");
         final dir = Directory(downloadPath);
         if (await dir.exists()) {
           final files = await dir.list(recursive: true, followLinks: false).toList();
-          debugPrint("DEBUG: Files in directory (recursive): ${files.length}");
-
-          // Get the base name from stored filename for fuzzy matching
           final targetName = path.basenameWithoutExtension(storedFileName);
-
-          // Try fuzzy matching with different thresholds
+          
           actualFilePath = _findBestMatch(targetName, files, format, threshold: 0.75) ??
               _findBestMatch(targetName, files, format, threshold: 0.65) ??
               _findBestMatch(targetName, files, format, threshold: 0.55);
@@ -247,81 +248,71 @@ class _CompletedTasksState extends State<CompletedTasks> {
       }
 
       if (actualFilePath == null) {
-        debugPrint("DEBUG: File not found anywhere");
         if (!mounted) return;
         _showSnackBar(
           context,
           "File not found in download location",
-          color: Colors.red,
-          icon: Icons.error,
+          color: const Color(0xFFEF4444),
+          icon: Icons.error_outline_rounded,
         );
         return;
       }
 
-      debugPrint("DEBUG: Attempting to open file: $actualFilePath");
-
-      // Try to open the file
       final result = await OpenFile.open(actualFilePath);
       if (!mounted) return;
-
-      debugPrint("DEBUG: OpenFile result: ${result.type}, message: ${result.message}");
-
-      final fallbackMessage = (result.message.isNotEmpty) ? result.message : 'Unknown error';
 
       switch (result.type) {
         case ResultType.done:
           _showSnackBar(
             context,
-            "File opened successfully.",
-            color: Colors.green,
-            icon: Icons.check_circle,
+            "File opened successfully! 🎉",
+            color: const Color(0xFF10B981),
+            icon: Icons.check_circle_rounded,
           );
           break;
         case ResultType.fileNotFound:
           _showSnackBar(
             context,
             "File not found by system",
-            color: Colors.red,
-            icon: Icons.error,
+            color: const Color(0xFFEF4444),
+            icon: Icons.error_outline_rounded,
           );
           break;
         case ResultType.noAppToOpen:
           _showSnackBar(
             context,
             "No app found to open this file type.",
-            color: Colors.orange,
-            icon: Icons.warning,
+            color: const Color(0xFFF59E0B),
+            icon: Icons.warning_rounded,
           );
           break;
         case ResultType.permissionDenied:
           _showSnackBar(
             context,
             "Permission denied to open file.",
-            color: Colors.red,
-            icon: Icons.block,
+            color: const Color(0xFFEF4444),
+            icon: Icons.block_rounded,
           );
           break;
         default:
           _showSnackBar(
             context,
-            "Could not open file: $fallbackMessage",
-            color: Colors.red,
-            icon: Icons.error,
+            "Could not open file: ${result.message}",
+            color: const Color(0xFFEF4444),
+            icon: Icons.error_outline_rounded,
           );
       }
     } catch (e) {
-      debugPrint("DEBUG: Exception occurred: $e");
       if (!mounted) return;
       _showSnackBar(
         context,
         "Error opening file: ${e.toString()}",
-        color: Colors.red,
-        icon: Icons.error,
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
     }
   }
 
-  // Method to open folder location; prefers the file's containing folder if available
   Future<void> _openFolder(String downloadPath, {String? targetFile}) async {
     try {
       String pathToOpen = downloadPath;
@@ -338,16 +329,16 @@ class _CompletedTasksState extends State<CompletedTasks> {
       if (result.type == ResultType.done) {
         _showSnackBar(
           context,
-          "Folder opened successfully.",
-          color: Colors.green,
-          icon: Icons.folder_open,
+          "Folder opened successfully! 📁",
+          color: const Color(0xFF10B981),
+          icon: Icons.folder_open_rounded,
         );
       } else {
         _showSnackBar(
           context,
           "Could not open folder.",
-          color: Colors.orange,
-          icon: Icons.warning,
+          color: const Color(0xFFF59E0B),
+          icon: Icons.warning_rounded,
         );
       }
     } catch (e) {
@@ -355,10 +346,567 @@ class _CompletedTasksState extends State<CompletedTasks> {
       _showSnackBar(
         context,
         "Error opening folder: ${e.toString()}",
-        color: Colors.red,
-        icon: Icons.error,
+        color: const Color(0xFFEF4444),
+        icon: Icons.error_outline_rounded,
       );
     }
+  }
+
+  Widget _buildQuickAction({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+    required String tooltip,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: color.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Icon(
+              icon,
+              color: color,
+              size: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTaskCard(task, int index) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final formatColor = _getFormatColor(task.format, context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 500;
+
+    String displayName;
+    if (task.fileName != null && task.fileName!.isNotEmpty) {
+      final base = path.basename(task.fileName!);
+      final baseNoExt = path.basenameWithoutExtension(base);
+      final ext = path.extension(base);
+      displayName = '${_sanitizeFileName(baseNoExt)}$ext';
+    } else {
+      displayName = task.url;
+    }
+
+    return AnimatedBuilder(
+      animation: _listAnimationController,
+      builder: (context, child) {
+        final slideAnimation = Tween<Offset>(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: _listAnimationController,
+          curve: Interval(
+            (index * 0.1).clamp(0.0, 1.0),
+            ((index * 0.1) + 0.3).clamp(0.0, 1.0),
+            curve: Curves.easeOutBack,
+          ),
+        ));
+
+        final fadeAnimation = Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(CurvedAnimation(
+          parent: _listAnimationController,
+          curve: Interval(
+            (index * 0.05).clamp(0.0, 1.0),
+            ((index * 0.05) + 0.5).clamp(0.0, 1.0),
+            curve: Curves.easeOut,
+          ),
+        ));
+
+        return SlideTransition(
+          position: slideAnimation,
+          child: FadeTransition(
+            opacity: fadeAnimation,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+              child: Material(
+                elevation: 0,
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.transparent,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: isDark
+                          ? [
+                              const Color(0xFF1E293B),
+                              const Color(0xFF0F172A).withOpacity(0.8),
+                            ]
+                          : [
+                              Colors.white,
+                              const Color(0xFFF8FAFC),
+                            ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark 
+                          ? const Color(0xFF334155).withOpacity(0.3)
+                          : const Color(0xFFE2E8F0).withOpacity(0.8),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                        spreadRadius: 0,
+                      ),
+                      BoxShadow(
+                        color: formatColor.withOpacity(0.05),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
+                        spreadRadius: -4,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => _openFile(task.fileName, task.downloadPath, task.format),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Padding(
+                        padding: EdgeInsets.all(isSmallScreen ? 14 : 18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Main content row
+                            Row(
+                              children: [
+                                // Format Icon
+                                Container(
+                                  padding: EdgeInsets.all(isSmallScreen ? 10 : 12),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        formatColor,
+                                        formatColor.withOpacity(0.8),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: formatColor.withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    _getFormatIcon(task.format),
+                                    color: Colors.white,
+                                    size: isSmallScreen ? 18 : 20,
+                                  ),
+                                ),
+                                
+                                const SizedBox(width: 12),
+                                
+                                // Content - Make expandable
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        displayName,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.inter(
+                                          fontSize: isSmallScreen ? 14 : 15,
+                                          fontWeight: FontWeight.w600,
+                                          color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                                          height: 1.3,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      // Tags row - Make them wrap properly
+                                      Wrap(
+                                        spacing: 6,
+                                        runSpacing: 4,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: task.format == "mp3" 
+                                                  ? const Color(0xFF8B5CF6).withOpacity(0.1)
+                                                  : const Color(0xFF3B82F6).withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                              border: Border.all(
+                                                color: task.format == "mp3" 
+                                                    ? const Color(0xFF8B5CF6).withOpacity(0.3)
+                                                    : const Color(0xFF3B82F6).withOpacity(0.3),
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              task.format == "mp3" ? "Audio" : "Video",
+                                              style: GoogleFonts.inter(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                                color: task.format == "mp3" 
+                                                    ? const Color(0xFF8B5CF6)
+                                                    : const Color(0xFF3B82F6),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF10B981).withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                              border: Border.all(
+                                                color: const Color(0xFF10B981).withOpacity(0.3),
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              task.mode == "playlist" ? "Playlist" : "Single",
+                                              style: GoogleFonts.inter(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                                color: const Color(0xFF10B981),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            
+                            const SizedBox(height: 12),
+                            
+                            // Action Buttons - Make them responsive
+                            if (isSmallScreen)
+                              // Stack vertically on small screens
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildQuickAction(
+                                          icon: Icons.refresh_rounded,
+                                          color: const Color(0xFF6366F1),
+                                          onPressed: () {
+                                            final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                                            downloadManager.requeueTask(task);
+                                          },
+                                          tooltip: "Download Again",
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: _buildQuickAction(
+                                          icon: Icons.play_arrow_rounded,
+                                          color: const Color(0xFF3B82F6),
+                                          onPressed: () => _openFile(task.fileName, task.downloadPath, task.format),
+                                          tooltip: "Open File",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildQuickAction(
+                                          icon: Icons.folder_open_rounded,
+                                          color: const Color(0xFF10B981),
+                                          onPressed: () => _openFolder(task.downloadPath, targetFile: task.fileName),
+                                          tooltip: "Open Folder",
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: _buildQuickAction(
+                                          icon: Icons.delete_rounded,
+                                          color: const Color(0xFFEF4444),
+                                          onPressed: () {
+                                            final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                                            downloadManager.removeCompletedTask(task);
+                                          },
+                                          tooltip: "Remove from List",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            else
+                              // Keep horizontal on larger screens
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  _buildQuickAction(
+                                    icon: Icons.refresh_rounded,
+                                    color: const Color(0xFF6366F1),
+                                    onPressed: () {
+                                      final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                                      downloadManager.requeueTask(task);
+                                    },
+                                    tooltip: "Download Again",
+                                  ),
+                                  _buildQuickAction(
+                                    icon: Icons.play_arrow_rounded,
+                                    color: const Color(0xFF3B82F6),
+                                    onPressed: () => _openFile(task.fileName, task.downloadPath, task.format),
+                                    tooltip: "Open File",
+                                  ),
+                                  _buildQuickAction(
+                                    icon: Icons.folder_open_rounded,
+                                    color: const Color(0xFF10B981),
+                                    onPressed: () => _openFolder(task.downloadPath, targetFile: task.fileName),
+                                    tooltip: "Open Folder",
+                                  ),
+                                  _buildQuickAction(
+                                    icon: Icons.delete_rounded,
+                                    color: const Color(0xFFEF4444),
+                                    onPressed: () {
+                                      final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                                      downloadManager.removeCompletedTask(task);
+                                    },
+                                    tooltip: "Remove from List",
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHeader(int completedCount) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 500;
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        children: [
+          Flex(
+            direction: isSmallScreen ? Axis.vertical : Axis.horizontal,
+            crossAxisAlignment: isSmallScreen ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF10B981), Color(0xFF059669)],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF10B981).withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.check_circle_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Completed Downloads",
+                          style: GoogleFonts.inter(
+                            fontSize: isSmallScreen ? 18 : 20,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "$completedCount downloads completed",
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: isSmallScreen ? 0 : 16, height: isSmallScreen ? 16 : 0),
+              Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: isDark 
+                        ? const Color(0xFF334155).withOpacity(0.5)
+                        : const Color(0xFFE2E8F0),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => setState(() => _recentFirst = !_recentFirst),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _recentFirst ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                                size: 16,
+                                color: const Color(0xFF3B82F6),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                _recentFirst ? "Recent" : "Oldest",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF3B82F6),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 20,
+                      width: 1,
+                      color: isDark 
+                          ? const Color(0xFF334155).withOpacity(0.5)
+                          : const Color(0xFFE2E8F0),
+                    ),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          final downloadManager = Provider.of<DownloadManager>(context, listen: false);
+                          downloadManager.clearAllCompletedTasks();
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.delete_sweep_rounded,
+                                size: 16,
+                                color: Color(0xFFEF4444),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                "Clear",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFFEF4444),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isDark 
+                  ? const Color(0xFF1E293B).withOpacity(0.5)
+                  : const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isDark 
+                    ? const Color(0xFF334155).withOpacity(0.3)
+                    : const Color(0xFFE2E8F0),
+                width: 2,
+              ),
+            ),
+            child: Icon(
+              Icons.download_done_rounded,
+              size: 48,
+              color: isDark 
+                  ? const Color(0xFF64748B) 
+                  : const Color(0xFF94A3B8),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            "No completed downloads yet",
+            style: GoogleFonts.inter(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Your completed downloads will appear here",
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -371,116 +919,19 @@ class _CompletedTasksState extends State<CompletedTasks> {
         }
 
         if (completed.isEmpty) {
-          return const Center(child: Text("No completed downloads yet."));
+          return _buildEmptyState();
         }
 
         return Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton.icon(
-                  icon: Icon(_recentFirst ? Icons.arrow_downward : Icons.arrow_upward),
-                  label: Text(_recentFirst ? "Recent First" : "Oldest First"),
-                  onPressed: () => setState(() => _recentFirst = !_recentFirst),
-                ),
-                TextButton.icon(
-                  icon: const Icon(Icons.delete_sweep),
-                  label: const Text("Clear All"),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
-                  onPressed: () {
-                    downloadManager.clearAllCompletedTasks();
-                    _showSnackBar(
-                      context,
-                      "All completed tasks cleared.",
-                      color: Colors.red,
-                      icon: Icons.delete_sweep,
-                    );
-                  },
-                ),
-              ],
-            ),
+            _buildHeader(completed.length),
             Expanded(
               child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 6),
                 itemCount: completed.length,
                 itemBuilder: (context, index) {
                   final task = completed[index];
-
-                  // Use the actual stored filename and extension for display when available
-                  String displayName;
-                  if (task.fileName != null && task.fileName!.isNotEmpty) {
-                    final base = path.basename(task.fileName!);
-                    final baseNoExt = path.basenameWithoutExtension(base);
-                    final ext = path.extension(base);
-                    displayName = '${_sanitizeFileName(baseNoExt)}$ext';
-                  } else {
-                    displayName = task.url;
-                  }
-
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: Card(
-                      elevation: 5,
-                      shadowColor: Colors.black26,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: _getFormatColor(task.format, context).withValues(alpha: 0.15),
-                          child: Icon(
-                            _getFormatIcon(task.format),
-                            color: _getFormatColor(task.format, context),
-                          ),
-                        ),
-                        title: Text(
-                          displayName,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          '${task.format == "mp3" ? "Audio" : "Video"} • ${task.mode == "playlist" ? "Playlist" : "Single"}',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Theme.of(context).textTheme.bodySmall?.color,
-                          ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Open file button
-                            IconButton(
-                              icon: const Icon(Icons.play_arrow, color: Colors.blue),
-                              tooltip: "Open File",
-                              onPressed: () => _openFile(task.fileName, task.downloadPath, task.format),
-                            ),
-                            // Open folder button (opens containing folder if known)
-                            IconButton(
-                              icon: const Icon(Icons.folder_open, color: Colors.green),
-                              tooltip: "Open Folder",
-                              onPressed: () => _openFolder(task.downloadPath, targetFile: task.fileName),
-                            ),
-                            // Delete button
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              tooltip: "Delete from List",
-                              onPressed: () {
-                                downloadManager.removeCompletedTask(task);
-                                _showSnackBar(
-                                  context,
-                                  "Task deleted from list.",
-                                  color: Colors.red,
-                                  icon: Icons.delete,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        onTap: () => _openFile(task.fileName, task.downloadPath, task.format),
-                      ),
-                    ),
-                  );
+                  return _buildTaskCard(task, index);
                 },
               ),
             ),
